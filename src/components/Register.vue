@@ -33,26 +33,24 @@ export default {
 </script>
 
 <style scoped>
-    .container{
-        min-width: 25em;
-        width: 25em;
-        height: 500px;
-        min-height: 500px;
-        /* background-color:rgba(255, 255, 255, .1); */
+   .container{
+        min-width: 400px;
+        width: 400px;
+        height: 400px;
+        min-height: 400px;
         display: block;
     }
     .login-text{
         position: absolute;
     }
     .chat-panel-text{
-        /* width: 100%; */
-        font-size: 5em;
+        font-size: 80px;
     }
     .username-text{
-        margin-top: 2em;
+        margin-top: 32px;
     }
     .password-text{
-        margin-top: 1em;
+        margin-top: 16px;
     }
     .username-input,.password-input{
         width: 100%;
@@ -63,7 +61,7 @@ export default {
     }
     .f-s-text{
         float: right;
-        margin-top: 1em;
+        margin-top: 16px;
     }
     .authLink {
         color: white;
