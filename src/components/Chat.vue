@@ -22,7 +22,34 @@
                     </div>
                 </div>
             </div>
-            <div class="medium"></div>
+            <div class="medium">
+                <div class="label">
+                    <div>Chats</div>
+                    <div>
+                        <input type="text">
+                    </div>
+                </div>
+                <div class="list">
+                    <div v-for="item in contacts" :key="item.name">
+                        <div>
+                            <div class="contactAvator">
+                                <img :src="item.avator">
+                            </div>
+                            <div class="contactInfo">
+                                <div class="contactName">
+                                    <span>{{item.nickname}}</span>
+                                </div>
+                                <div class="contactContent">
+                                    <span>{{item.content}}</span>
+                                </div>
+                            </div>
+                            <div class="contactTime">
+                                <span>{{item.time}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="right"></div>
         </div>
         
@@ -39,7 +66,16 @@ export default {
             duihua:true,
             yonghu:true,
             bangzhu:true,
-            shezhi:true
+            shezhi:true,
+            contacts:[
+                {
+                    "avator": require("@/assets/logo.png"),
+                    "nickname":"tom",
+                    "content":"how r u?",
+                    "time":"10:32"
+                    
+                }
+            ]
         }
     },
     methods:{
@@ -88,6 +124,8 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    color: white;
+    /* box-sizing: content-box; */
    
 }
 
@@ -112,6 +150,7 @@ export default {
     background-color: #2A2D2E;
     width: 280px;
     height: 100%;
+    text-align: center;
 }
 .right{
     width: 100%;
@@ -131,13 +170,107 @@ export default {
     text-align: center;
 }
 
-.left > div > div:hover .iconfont{
-    
-
-}
 
 .left > div > div:hover{
     border-left: 1px solid white;
 
 }
+.label{
+    width: 100%;
+    height: 13%;
+    display: flex;
+    display: -webkit-flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.label > div{
+    width: 100%;
+}
+
+.label > div:nth-child(odd){
+    height: 35%;
+    display: flex;
+    display: -webkit-flex;
+    align-items: center;
+    justify-content: center;
+     box-shadow: 0px 10px 10px -5px #1d1d1d ;
+}
+
+.label > div:nth-child(even){
+    height: 40%;
+}
+
+.label > div:nth-child(even) > input{
+    width: 85%;
+    height: 80%;
+    background-color: #333;
+    border: 0;
+    border-radius: 5px;
+    padding-left: 10px;
+    color: white;
+
+}
+
+
+.list{
+  width: 100%;
+  height: 87%;
+  overflow-y:auto;
+  border: 0px;
+}
+
+.list > div{
+    background-color: #444;
+    width: 100%;
+    height: 45px;
+    margin-top: 4px;
+    display: flex;
+    display: -webkit-flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.list > div > div{
+    /* background-color: yellow; */
+    width: 85%;
+    height: 100%;
+    display: flex;
+    display: -webkit-flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    align-items: center;
+}
+
+.contactAvator{
+    width: 35px;
+    height: 35px;
+    /* background-color: #fff; */
+}
+
+.contactAvator > img{
+    width: 35px;
+    height: 35px;
+    /* background-color: red; */
+    border-radius: 35px;
+}
+
+.contactInfo{
+    margin-left: 5%;
+    /* background-color: black; */
+    height: 45px;
+    width: 60%;
+    font-size: 13px;
+    display: flex;
+    display: -webkit-flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.contactTime{
+    height: 35px;
+    font-size: 12px;
+}
+
 </style>
