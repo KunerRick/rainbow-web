@@ -24,10 +24,10 @@
             </div>
             <div class="medium">
                 <div class="label">
-                    <div>Chats</div>
-                    <div>
-                        <input type="text">
-                    </div>
+                    <span>Chats</span>
+                </div>
+                <div class="search">
+                    <input type="text">
                 </div>
                 <div class="list">
                     <div v-for="item in contacts" :key="item.name">
@@ -50,7 +50,38 @@
                     </div>
                 </div>
             </div>
-            <div class="right"></div>
+            <div class="right">
+                <div class="label">
+                    <span>Tom Smith</span>
+                </div>
+                <div class="content">
+                    <div class="you">
+                         <div class="time">
+                            <span>10:30</span>
+                        </div>
+                        <div class="bubble">
+                            <img src="@/assets/logo.png" alt="">
+                            <div>How R U ?</div>
+                        </div>
+                    </div>
+
+                    <div class="me">
+                        <div class="time">
+                            <span>10:30</span>
+                        </div>
+                        <div class="bubble">
+                            <div>I'm Fine,thank you fasdfasdfasdfasdfasddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd</div>
+                            <img src="@/assets/logo.png" alt="">
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <div class="typing">
+                    <textarea placeholder="tying a message ..."></textarea>
+                </div>
+
+            </div>
         </div>
         
     </div>
@@ -69,6 +100,7 @@ export default {
             shezhi:true,
             contacts:[
                 {
+               
                     "avator": require("@/assets/logo.png"),
                     "nickname":"tom",
                     "content":"how r u?",
@@ -155,6 +187,8 @@ export default {
 .right{
     width: 100%;
     height: 100%;
+    background-color: #F0F1F5;
+    color: black;
 }
 
  .iconfont{
@@ -175,35 +209,26 @@ export default {
     border-left: 1px solid white;
 
 }
-.label{
+.medium .label{
     width: 100%;
-    height: 13%;
-    display: flex;
-    display: -webkit-flex;
-    justify-content: space-between;
-    flex-direction: column;
-}
-
-.label > div{
-    width: 100%;
-}
-
-.label > div:nth-child(odd){
-    height: 35%;
-    display: flex;
-    display: -webkit-flex;
-    align-items: center;
-    justify-content: center;
+    height: 5%;
+    min-height: 35px;
+    text-align: center;
+    line-height: 35px;
      box-shadow: 0px 10px 10px -5px #1d1d1d ;
 }
 
-.label > div:nth-child(even){
-    height: 40%;
+.medium .search{
+    height: 10%;
+    /* background-color: skyblue; */
+    min-height: 70px;
+
 }
 
-.label > div:nth-child(even) > input{
+.medium .search input{
+    margin-top: 10%;
     width: 85%;
-    height: 80%;
+    height: 50%;
     background-color: #333;
     border: 0;
     border-radius: 5px;
@@ -272,5 +297,89 @@ export default {
     height: 35px;
     font-size: 12px;
 }
+
+.right .label{
+    height: 5%;
+    min-height: 35px;
+    /* box-shadow: 0px 10px 10px -5px #444 ; */
+    border-bottom: 1px solid #b2b2b2;
+    line-height: 35px;
+    text-align: center;
+}
+
+.right .content{
+    height: 85%;
+    /* background-color: lightgreen; */
+}
+
+.typing{
+    height: 10%;
+    min-height: 70px;
+    max-height: 70px;
+    border-top: 1px solid #b2b2b2;
+    overflow: hidden;
+}
+
+.typing textarea{
+    width: 100%;
+    border: 0;
+    height: 100%;
+    resize: none;
+    padding: 10px;
+}
+
+.content > div{
+    padding: 15px 10px;
+    overflow-y:auto;
+}
+
+.content .me .bubble{
+    display: flex; 
+    display: -webkit-flex;
+    flex-direction: row;
+    justify-content: flex-end;
+} 
+
+.content .me .bubble div{
+    max-width: 60%;
+    background-color: #fff;
+    word-wrap:break-word;  
+    word-break:break-all;  
+    border-radius: 20px 0 20px 20px;
+    background-color: #25B6D1;
+    padding: 5px 10px;
+    color: white;
+}
+
+.content div .time{
+    text-align: center;
+    color: #b2b2b2;
+    font-size: 14px;
+}
+
+.content .you .bubble{
+    width: 100%;
+    padding: 5px 0;
+    display: -webkit-flex;
+    justify-content: flex-start;
+}
+
+.content .you >.bubble div{
+    max-width: 60%;
+    background-color: #fff;
+    word-wrap:break-word;  
+    word-break:break-all;
+    border-radius: 0 20px 20px 20px;
+    background-color: #2DCB70;
+    padding: 5px 10px;
+    color: white;
+}
+
+.content img{
+    width: 35px;
+    height: 35px;
+    border-radius: 35px;
+}
+
 
 </style>
