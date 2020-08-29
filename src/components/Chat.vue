@@ -183,11 +183,11 @@ export default {
     min-width: 800px;
     height: 80%;
     display: flex;
-    border: 1px solid #333333;
+    border: 1px solid #333;
 
 }
 .left{
-    background-color: #333333;
+    background-color: #333;
     width: 80px;
     height: 100%;
     min-height: 100%;

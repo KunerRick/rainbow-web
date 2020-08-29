@@ -7,14 +7,17 @@
         <div class="setting">
             <div @click.stop="loadMe">
                 <span>我的</span>
+                <i>></i>
             </div>
 
             <div>
                 <span>主题</span>
+                <i>></i>
             </div>
 
             <div>
                 <span>提醒</span>
+                <i>></i>
             </div>
         </div>
     </div>
@@ -43,8 +46,6 @@ export default {
     position: relative;
 }
 
-
-
 .medium .label div{
     height: 100%;
     float: right;
@@ -64,7 +65,6 @@ export default {
     margin-top: 20px;
 }
 
-
 .setting > div{
     background-color:#444;;
     padding: 5px 10px;
@@ -72,6 +72,9 @@ export default {
     line-height: 30px;
     cursor: pointer;
     margin-bottom: 10px;
+    display: flex;
+    display: -webkit-flex;
+    justify-content: space-between;
 }
 
 </style>
