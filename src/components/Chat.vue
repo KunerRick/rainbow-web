@@ -3,18 +3,18 @@
         <div class="main">
             <div class="left">
                 <div>
-                    <div @mouseover="i('duihua')" @mouseout="o('duihua')" >
+                    <div @click.stop="loadChats">
                         <span :class="['iconfont',duihua?'icon-duihuaxinxi':'icon-duihuaxinxitianchong']"></span>
                     </div>
-                    <div @mouseover="i('yonghu')" @mouseout="o('yonghu')">
+                    <div @click.stop="loadContacts">
                         <span :class="['iconfont', yonghu?'icon-yonghu':'icon-yonghutianchong']" ></span>
                     </div>
                 </div>
                 <div>
-                    <div @mouseover="i('bangzhu')" @mouseout="o('bangzhu')">
+                    <div @click.stop="loadBangzhu">
                         <span :class="['iconfont', bangzhu?'icon-bangzhu':'icon-bangzhutianchong']"></span>
                     </div>
-                    <div @mouseover="i('shezhi')" @mouseout="o('shezhi')">
+                    <div @click.stop="loadShezhi" >
                         <span :class="['iconfont', shezhi?'icon-shezhi':'icon-shezhitianchong']"></span>
                     </div>
                     <div>
@@ -23,15 +23,19 @@
                 </div>
             </div>
             <div class="medium">
-                <div class="label">
+                <component :is="mediumComName" @func="rightCom"></component>
+                <!-- <div class="label">
                     <span>Chats</span>
+                    <div>
+                        <span v-show="addContactStatus" class="iconfont icon-tianjiayonghu" @click.stop="loadAddContactCom"></span>
+                    </div>
                 </div>
                 <div class="search">
                     <input type="text">
                 </div>
                 <div class="list">
                     <div v-for="item in contacts" :key="item.name">
-                        <div>
+                        <div @click.stop="loadChatCom">
                             <div class="contactAvator">
                                 <img :src="item.avator">
                             </div>
@@ -48,10 +52,15 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
             <div class="right">
-                <div class="label">
+                <transition>
+                    <component :is="rightComName"></component>
+                </transition>
+                
+                <!-- <component :is="flow"></component> -->
+                <!-- <div class="label">
                     <span>Tom Smith</span>
                 </div>
                 <div class="content">
@@ -70,16 +79,14 @@
                             <span>10:30</span>
                         </div>
                         <div class="bubble">
-                            <div>I'm Fine,thank you fasdfasdfasdfasdfasddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd</div>
+                            <div>I'm Fine,thank you</div>
                             <img src="@/assets/logo.png" alt="">
                         </div>
-                        
                     </div>
                 </div>
-
                 <div class="typing">
                     <textarea placeholder="tying a message ..."></textarea>
-                </div>
+                </div> -->
 
             </div>
         </div>
@@ -90,66 +97,73 @@
 
 <script>
 import "@/assets/fonts/iconfont.css"
+
+
+// import right
+import SettingsDetails from '@/components/right/SettingsDetails'
+import AddContact from '@/components/right/AddContact'
+import Flow from '@/components/right/Flow'
+
+// import medium
+import Sessions from '@/components/medium/Sessions'
+import Contacts from '@/components/medium/Contacts'
+import Settings from '@/components/medium/Settings'
+
+
 export default {
     name:"Chat",
     data(){
         return {
-            duihua:true,
+            duihua:false,
             yonghu:true,
             bangzhu:true,
             shezhi:true,
-            contacts:[
-                {
-               
-                    "avator": require("@/assets/logo.png"),
-                    "nickname":"tom",
-                    "content":"how r u?",
-                    "time":"10:32"
-                    
-                }
-            ]
+            mediumComName:"Sessions",
+            rightComName: 'Flow'
+         
         }
     },
     methods:{
-        i(target){
-              switch(target){
-                case "duihua":
-                    this.duihua =false;
-                    break;
-                case "yonghu":
-                    this.yonghu =false;
-                    break;
-                case "shezhi":
-                    this.shezhi =false;
-                    break;
-                case "bangzhu":
-                    this.bangzhu =false;
-                    break;
-            }
-        } ,
-        o(target){
-            switch(target){
-                case "duihua":
-                    this.duihua =true;
-                    break;
-                case "yonghu":
-                    this.yonghu =true;
-                    break;
-                case "shezhi":
-                    this.shezhi =true;
-                    break;
-                case "bangzhu":
-                    this.bangzhu =true;
-                    break;
-            }
+         loadChats(){
+            this.duihua = false;
+            this.yonghu = this.bangzhu = this.shezhi = true; 
+            this.mediumComName = Sessions;
+            
+        },
+        loadContacts(){
+            this.yonghu = false;
+            this.duihua = this.bangzhu = this.shezhi = true;
+            this.addContactStatus = true;
+            this.mediumComName = Contacts;
+        },
+        loadBangzhu(){
+            this.bangzhu = false;
+            this.yonghu = this.duihua = this.shezhi = true; 
+        },
+        loadShezhi(){
+            this.shezhi = false;
+            this.yonghu = this.bangzhu = this.duihua = true; 
+            this.mediumComName = Settings;
+        },
+        rightCom(rightCom){
+            this.rightComName = rightCom;
         }
+       
+    },
+    components:{
+        //right
+        Flow,
+        AddContact,
+        Settings,
+        //medium
+        Sessions,
+        Contacts
     }
 }
 </script>
 
 
 <style scoped>
-
 .container{
     width: 100%;
     height: 100%;
@@ -174,6 +188,7 @@ export default {
     background-color: #333333;
     width: 80px;
     height: 100%;
+    min-height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -182,13 +197,16 @@ export default {
     background-color: #2A2D2E;
     width: 280px;
     height: 100%;
+    min-height: 100%;
     text-align: center;
 }
 .right{
     width: 100%;
     height: 100%;
+    min-height: 100%;
     background-color: #F0F1F5;
     color: black;
+    position: relative;
 }
 
  .iconfont{
@@ -209,18 +227,33 @@ export default {
     border-left: 1px solid white;
 
 }
-.medium .label{
+/* .medium .label{
     width: 100%;
     height: 5%;
     min-height: 35px;
     text-align: center;
     line-height: 35px;
-     box-shadow: 0px 10px 10px -5px #1d1d1d ;
+    box-shadow: 0px 10px 10px -5px #1d1d1d ;
+    position: relative;
+}
+
+
+
+.medium .label div{
+    height: 100%;
+    float: right;
+    line-height: 35px;
+    position: absolute;
+    right: 10px;
+    top: -11px;
+}
+
+.medium .label div span{
+    font-size: 20px;
 }
 
 .medium .search{
     height: 10%;
-    /* background-color: skyblue; */
     min-height: 70px;
 
 }
@@ -257,7 +290,6 @@ export default {
 }
 
 .list > div > div{
-    /* background-color: yellow; */
     width: 85%;
     height: 100%;
     display: flex;
@@ -270,19 +302,16 @@ export default {
 .contactAvator{
     width: 35px;
     height: 35px;
-    /* background-color: #fff; */
 }
 
 .contactAvator > img{
     width: 35px;
     height: 35px;
-    /* background-color: red; */
     border-radius: 35px;
 }
 
 .contactInfo{
     margin-left: 5%;
-    /* background-color: black; */
     height: 45px;
     width: 60%;
     font-size: 13px;
@@ -296,28 +325,32 @@ export default {
 .contactTime{
     height: 35px;
     font-size: 12px;
-}
+} */
 
-.right .label{
-    height: 5%;
-    min-height: 35px;
-    /* box-shadow: 0px 10px 10px -5px #444 ; */
+/* .right .label{
     border-bottom: 1px solid #b2b2b2;
     line-height: 35px;
     text-align: center;
 }
 
+.right .label span{
+    height: 35px;
+}
+
 .right .content{
     height: 85%;
-    /* background-color: lightgreen; */
+    overflow-y:auto;
 }
 
 .typing{
     height: 10%;
-    min-height: 70px;
+    min-height: 70px; 
     max-height: 70px;
+    width: 100%;
     border-top: 1px solid #b2b2b2;
     overflow: hidden;
+    position: absolute;
+    bottom: 0px;
 }
 
 .typing textarea{
@@ -325,12 +358,13 @@ export default {
     border: 0;
     height: 100%;
     resize: none;
-    padding: 10px;
+    padding: 15px;
 }
+
 
 .content > div{
     padding: 15px 10px;
-    overflow-y:auto;
+  
 }
 
 .content .me .bubble{
@@ -379,7 +413,7 @@ export default {
     width: 35px;
     height: 35px;
     border-radius: 35px;
-}
+} */
 
 
 </style>
