@@ -103,6 +103,7 @@ import "@/assets/fonts/iconfont.css"
 import SettingsDetails from '@/components/right/SettingsDetails'
 import AddContact from '@/components/right/AddContact'
 import Flow from '@/components/right/Flow'
+import Me from '@/components/right/Me'
 
 // import medium
 import Sessions from '@/components/medium/Sessions'
@@ -155,6 +156,7 @@ export default {
         Flow,
         AddContact,
         Settings,
+        Me,
         //medium
         Sessions,
         Contacts
@@ -225,6 +227,7 @@ export default {
 
 .left > div > div:hover{
     border-left: 1px solid white;
+    cursor: pointer;
 
 }
 /* .medium .label{

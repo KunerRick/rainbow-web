@@ -3,13 +3,32 @@
         <div class="label">
             <span>Settings</span>
         </div>
+
+        <div class="setting">
+            <div @click.stop="loadMe">
+                <span>我的</span>
+            </div>
+
+            <div>
+                <span>主题</span>
+            </div>
+
+            <div>
+                <span>提醒</span>
+            </div>
+        </div>
     </div>
 </template>
 
 
 <script>
 export default {
-    name:"Settings"
+    name:"Settings",
+    methods:{
+        loadMe(){
+            this.$emit("func","Me");
+        }
+    }
 }
 </script>
 
@@ -39,6 +58,20 @@ export default {
     font-size: 20px;
 }
 
+.setting{
+    width: 100%;
+    height: 80%;
+    margin-top: 20px;
+}
 
 
-</style>>
+.setting > div{
+    background-color:#444;;
+    padding: 5px 10px;
+    height: 30px;
+    line-height: 30px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+</style>

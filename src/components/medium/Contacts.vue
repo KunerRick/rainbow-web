@@ -79,6 +79,7 @@ export default {
     position: absolute;
     right: 10px;
     top: 0px;
+    cursor: pointer;
 }
 
 .medium .label div span{
