@@ -55,8 +55,11 @@
                 </div> -->
             </div>
             <div class="right">
-                <transition>
-                    <component :is="rightComName"></component>
+                <transition name="fade"
+                            enter-active-class="fadeIn"
+                            leave-active-class="fadeOut" 
+                            mode="out-in">
+                    <component :is="rightComName" style="animation-duration: .2s"></component>
                 </transition>
                 
                 <!-- <component :is="flow"></component> -->
@@ -121,7 +124,6 @@ export default {
             shezhi:true,
             mediumComName:"Sessions",
             rightComName: 'Flow'
-         
         }
     },
     methods:{

@@ -121,6 +121,7 @@ export default {
     display: -webkit-flex;
     flex-direction: row;
     justify-content: center;
+    cursor: pointer;
 }
 
 .list > div > div{

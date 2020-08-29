@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="settingsItem">
         <div class="label">
             <span>Settings</span>
         </div>
@@ -11,7 +11,7 @@
             </div>
 
             <div>
-                <span>主题</span>
+                <span>安全</span>
                 <i>></i>
             </div>
 
@@ -19,6 +19,10 @@
                 <span>提醒</span>
                 <i>></i>
             </div>
+
+        </div>
+        <div class="exit">
+            <span>登出</span>
         </div>
     </div>
 </template>
@@ -55,18 +59,18 @@ export default {
     top: -11px;
 }
 
-.medium .label div span{
-    font-size: 20px;
-}
-
 .setting{
     width: 100%;
-    height: 80%;
+    height: 100%;
     margin-top: 20px;
 }
 
+.setting:last-child{
+
+}
+
 .setting > div{
-    background-color:#444;;
+    background-color:#444;
     padding: 5px 10px;
     height: 30px;
     line-height: 30px;
@@ -75,6 +79,23 @@ export default {
     display: flex;
     display: -webkit-flex;
     justify-content: space-between;
+}
+
+.settingsItem{
+    position: relative;
+    height: 100%;
+}
+
+.exit{
+    background-color:#444;
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    cursor: pointer;
+    padding: 5px 0;
+    color: red;
+    position: absolute;
+    bottom: 0px;
 }
 
 </style>
