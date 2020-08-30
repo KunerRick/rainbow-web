@@ -101,9 +101,7 @@
 <script>
 import "@/assets/fonts/iconfont.css"
 
-
 // import right
-import SettingsDetails from '@/components/right/SettingsDetails'
 import AddContact from '@/components/right/AddContact'
 import Flow from '@/components/right/Flow'
 import Me from '@/components/right/Me'

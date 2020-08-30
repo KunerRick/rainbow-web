@@ -5,29 +5,53 @@
 
         <div>
             <div class="username-text">USERNAME</div>
-            <input class="username-input" type="text">
+            <input class="username-input" type="text" v-model="username">
         </div>
 
         <div>
             <div class="password-text">PASSWORD</div>
-            <input class="password-input" type="password">
+            <input class="password-input" type="password" v-model="passwd">
         </div>
 
         <div>
-            <div class="password-text">E-MAIL</div>
-            <input class="password-input" type="email">
+            <div class="password-text">NICKNAME</div>
+            <input class="password-input" type="email" v-model="nickname">
         </div>
 
         <div class="f-s-text"><router-link class="authLink" to="/reset">forget the password ?</router-link> or <router-link class="authLink" to="/login">sign in</router-link></div>
         <div class="signIn-div">
-            <input type="button" value="SIGN UP" class="signIn-btn"/>
+            <input type="button" value="SIGN UP" class="signIn-btn" @click.stop="signUp"/>
         </div>
     </div>
 </template>
 
 <script>
+import HttpApi from '@/util/HttpUtils.js'
+
 export default {
-    name: 'Regisger'
+    name: 'Regisger',
+    data(){
+        return {
+            username:null,
+            passwd:null,
+            nickname:null
+        }
+    },
+    methods:{
+        signUp(){
+            HttpApi.put('/sys/v1/signUp', {
+                username: this.username,
+                password: this.passwd,
+                nickname: this.nickname
+            })
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        }
+    }
 
 }
 </script>

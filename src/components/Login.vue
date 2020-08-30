@@ -12,7 +12,7 @@
             <div class="password-text">PASSWORD</div>
             <input class="password-input" type="password">
         </div>
-        <div class="f-s-text"><router-link class="authLink" to="/reset">forget the password ?</router-link> or <router-link class="authLink" to="/register">sign up</router-link></div>
+        <div class="f-s-text">instance<router-link class="authLink" to="/reset">forget the password ?</router-link> or <router-link class="authLink" to="/register">sign up</router-link></div>
         <div class="signIn-div">
             <input type="button" value="SIGN IN" class="signIn-btn" @click="signIn"/>
         </div>
@@ -20,6 +20,8 @@
 </template>
 
 <script>
+// import HttpApi from '@/util/HttpUtils.js'
+
 export default {
     name: 'Login',
     data:function(){
@@ -28,9 +30,17 @@ export default {
         }
     },
     methods:{
-       signIn(){
-           console.log(123);
-
+        signIn(){
+            // HttpApi.post('/sys/signIn', {
+            //     username: 'Fred',
+            //     password: 'Flintstone'
+            // })
+            // .then(function (response) {
+            //     console.log(response);
+            // })
+            // .catch(function (error) {
+            //     console.log(error);
+            // });
         //    sign in
         //sign in success
         this.$router.replace({path:"/chat"})
@@ -43,57 +53,57 @@ export default {
 </script>
 
 <style scoped>
-    .container{
-        min-width: 400px;
-        width: 400px;
-        height: 400px;
-        min-height: 400px;
-        display: block;
-    }
-    .login-text{
-        position: absolute;
-    }
-    .chat-panel-text{
-        font-size: 80px;
-    }
-    .username-text{
-        margin-top: 32px;
-    }
-    .password-text{
-        margin-top: 16px;
-    }
-    .username-input,.password-input{
-        width: 100%;
-        height: 32px;
-        border: 0px;
-        font-size: 20px;
-        outline: none;
-    }
-    .f-s-text{
-        float: right;
-        margin-top: 16px;
-    }
-    .authLink {
-        color: white;
-        text-decoration: none;
-    }
-    .authLink:hover{
-        text-decoration: underline;
-    }
-    .signIn-div{
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content:center;
-    }
+.container .container{
+    min-width: 400px;
+    width: 400px;
+    height: 400px;
+    min-height: 400px;
+    display: block;
+}
+.login-text{
+    position: absolute;
+}
+.chat-panel-text{
+    font-size: 80px;
+}
+.username-text{
+    margin-top: 32px;
+}
+.password-text{
+    margin-top: 16px;
+}
+.username-input,.password-input{
+    width: 100%;
+    height: 32px;
+    border: 0px;
+    font-size: 20px;
+    outline: none;
+}
+.f-s-text{
+    float: right;
+    margin-top: 16px;
+}
+.authLink {
+    color: white;
+    text-decoration: none;
+}
+.authLink:hover{
+    text-decoration: underline;
+}
+.signIn-div{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content:center;
+}
 
-    .signIn-btn{
-        margin-top: 20px;
-        padding: 10px;
-        width:130px;
-        height: 50px;
-        outline: none;
-        background-color: #fff;
-    }
+.signIn-btn{
+    margin-top: 20px;
+    padding: 10px;
+    width:130px;
+    height: 50px;
+    outline: none;
+    background-color: #fff;
+}
 </style>
