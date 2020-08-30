@@ -5,12 +5,12 @@
 
         <div>
             <div class="username-text">USERNAME</div>
-            <input class="username-input" type="text">
+            <input class="username-input" type="text" v-model="username">
         </div>
 
         <div>
             <div class="password-text">PASSWORD</div>
-            <input class="password-input" type="password">
+            <input class="password-input" type="password" v-model="passwd">
         </div>
         <div class="f-s-text">instance<router-link class="authLink" to="/reset">forget the password ?</router-link> or <router-link class="authLink" to="/register">sign up</router-link></div>
         <div class="signIn-div">
@@ -20,30 +20,32 @@
 </template>
 
 <script>
-// import HttpApi from '@/util/HttpUtils.js'
+import HttpApi from '@/util/HttpUtils.js'
 
 export default {
     name: 'Login',
     data:function(){
         return {
-
+            username:null,
+            passwd:null
         }
     },
     methods:{
         signIn(){
-            // HttpApi.post('/sys/signIn', {
-            //     username: 'Fred',
-            //     password: 'Flintstone'
-            // })
-            // .then(function (response) {
-            //     console.log(response);
-            // })
-            // .catch(function (error) {
-            //     console.log(error);
-            // });
+            HttpApi.post('/sys/v1/signIn', {
+                username: this.username,
+                passwd: this.passwd
+            })
+            .then(function (response) {
+                console.log(response);
+                
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         //    sign in
         //sign in success
-        this.$router.replace({path:"/chat"})
+        // this.$router.replace({path:"/chat"})
         //sign in fail
 
        }

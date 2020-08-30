@@ -15,7 +15,7 @@
 
         <div>
             <div class="password-text">NICKNAME</div>
-            <input class="password-input" type="email" v-model="nickname">
+            <input class="password-input" type="text" v-model="nickname">
         </div>
 
         <div class="f-s-text"><router-link class="authLink" to="/reset">forget the password ?</router-link> or <router-link class="authLink" to="/login">sign in</router-link></div>
@@ -41,7 +41,7 @@ export default {
         signUp(){
             HttpApi.put('/sys/v1/signUp', {
                 username: this.username,
-                password: this.passwd,
+                passwd: this.passwd,
                 nickname: this.nickname
             })
             .then(function (response) {
