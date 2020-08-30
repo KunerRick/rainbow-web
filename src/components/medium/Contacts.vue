@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="label">
-            <span>Contacts</span>
+            <span>通讯录</span>
             <div>
                 <span class="iconfont icon-tianjiayonghu" @click.stop="loadAddContactCom"></span>
             </div>

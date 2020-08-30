@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="label">
-            <span>Chats</span>
+            <span>聊天</span>
         </div>
         <div class="search">
             <input type="text">

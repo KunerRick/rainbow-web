@@ -1,7 +1,7 @@
 <template>
     <div class="settingsItem">
         <div class="label">
-            <span>Settings</span>
+            <span>设置</span>
         </div>
 
         <div class="setting">

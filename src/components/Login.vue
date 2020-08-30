@@ -12,7 +12,7 @@
             <div class="password-text">PASSWORD</div>
             <input class="password-input" type="password">
         </div>
-        <div class="f-s-text"><router-link class="authLink" to="/reset">forget the password ?</router-link> or <router-link class="authLink" to="/register">sign up</router-link></div>
+        <div class="f-s-text">instance<router-link class="authLink" to="/reset">forget the password ?</router-link> or <router-link class="authLink" to="/register">sign up</router-link></div>
         <div class="signIn-div">
             <input type="button" value="SIGN IN" class="signIn-btn" @click="signIn"/>
         </div>
@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import HttpApi from '@/util/HttpUtils.js'
+
 export default {
     name: 'Login',
     data:function(){
@@ -28,12 +30,20 @@ export default {
         }
     },
     methods:{
-       signIn(){
-           console.log(123);
-
+        signIn(){
+            HttpApi.post('/sys/signIn', {
+                username: 'Fred',
+                password: 'Flintstone'
+            })
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         //    sign in
         //sign in success
-        this.$router.replace({path:"/chat"})
+        // this.$router.replace({path:"/chat"})
         //sign in fail
 
        }
