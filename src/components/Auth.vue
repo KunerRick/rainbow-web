@@ -14,10 +14,41 @@ import 'vue2-animate/dist/vue2-animate.min.css'
 
   export default {
     name: 'Auth',
-      render:function(c){
+    render:function(c){
         return c(Login);
+    },
+    created(){
+      // get cid
+      let localRainbow = localStorage.getItem("rainbow");
+      if(localRainbow){
+        localRainbow = JSON.parse(localRainbow);
+         let cid = localRainbow.cid;
+         if(!cid){
+            var rString = randomString(8, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+            let rainbow = {
+              cid:rString
+            };
+            localStorage.setItem("rainbow",JSON.stringify(rainbow));
+         }
+      }else{
+        let rString = randomString(8, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+        let rainbow = {
+          cid:rString
+        };
+        localStorage.setItem("rainbow",JSON.stringify(rainbow));
       }
+      
+    }
   }
+
+
+  function randomString(length, chars) {
+      var result = '';
+      for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+      return result;
+  }
+  
+
 </script>
 
 

@@ -18,79 +18,25 @@
                         <span :class="['iconfont', shezhi?'icon-shezhi':'icon-shezhitianchong']"></span>
                     </div>
                     <div>
-                        <span class="iconfont icon-avatar"></span>
+                        <img class="icon-avatar" :src="curUserProperty.avatar" alt="" />
                     </div>
                 </div>
             </div>
             <div class="medium">
                 <component :is="mediumComName" @func="rightCom"></component>
-                <!-- <div class="label">
-                    <span>Chats</span>
-                    <div>
-                        <span v-show="addContactStatus" class="iconfont icon-tianjiayonghu" @click.stop="loadAddContactCom"></span>
-                    </div>
-                </div>
-                <div class="search">
-                    <input type="text">
-                </div>
-                <div class="list">
-                    <div v-for="item in contacts" :key="item.name">
-                        <div @click.stop="loadChatCom">
-                            <div class="contactAvator">
-                                <img :src="item.avator">
-                            </div>
-                            <div class="contactInfo">
-                                <div class="contactName">
-                                    <span>{{item.nickname}}</span>
-                                </div>
-                                <div class="contactContent">
-                                    <span>{{item.content}}</span>
-                                </div>
-                            </div>
-                            <div class="contactTime">
-                                <span>{{item.time}}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
             </div>
             <div class="right">
                 <transition name="fade"
                             enter-active-class="fadeIn"
                             leave-active-class="fadeOut" 
                             mode="out-in">
-                    <component :is="rightComName" style="animation-duration: .2s"></component>
+                    <component :is="rightComName" 
+                                style="animation-duration: .2s" 
+                                @send="doMessage"
+                                v-bind:receiver="curReceiver"
+                                v-bind:curUserProperty="curUserProperty"
+                                ></component>
                 </transition>
-                
-                <!-- <component :is="flow"></component> -->
-                <!-- <div class="label">
-                    <span>Tom Smith</span>
-                </div>
-                <div class="content">
-                    <div class="you">
-                         <div class="time">
-                            <span>10:30</span>
-                        </div>
-                        <div class="bubble">
-                            <img src="@/assets/logo.png" alt="">
-                            <div>How R U ?</div>
-                        </div>
-                    </div>
-
-                    <div class="me">
-                        <div class="time">
-                            <span>10:30</span>
-                        </div>
-                        <div class="bubble">
-                            <div>I'm Fine,thank you</div>
-                            <img src="@/assets/logo.png" alt="">
-                        </div>
-                    </div>
-                </div>
-                <div class="typing">
-                    <textarea placeholder="tying a message ..."></textarea>
-                </div> -->
-
             </div>
         </div>
         
@@ -111,6 +57,13 @@ import Sessions from '@/components/medium/Sessions'
 import Contacts from '@/components/medium/Contacts'
 import Settings from '@/components/medium/Settings'
 
+// import WS from '../util/ws.js'
+
+import SockJS from  'sockjs-client';
+import  Stomp from 'stompjs';
+
+import HttpApi from '../util/http'
+
 
 export default {
     name:"Chat",
@@ -121,11 +74,103 @@ export default {
             bangzhu:true,
             shezhi:true,
             mediumComName:"Sessions",
-            rightComName: 'Flow'
+            rightComName: 'Flow',
+
+            stompClient:null,
+            timer:'',
+            curReceiver:null,
+
+            sessionRainbow : null,
+            localRainbow : null,
+
+            curUserProperty:null,
+
         }
     },
+    props:{
+        receiver : Object,
+        currentUserProperty:Object,
+    },
     methods:{
-         loadChats(){
+        initWebSocket() {
+            this.connection();
+            // let that= this;
+            // 断开重连机制,尝试发送消息,捕获异常发生时重连
+            // this.timer = setInterval(() => {
+            //     try {
+            //         that.stompClient.send("test");
+            //     } catch (err) {
+            //         console.log("断线了: " + err);
+            //         that.connection();
+            //     }
+            // }, 5000);
+        },
+        initCurrentUserProperty(){
+            HttpApi.get('/user/v1/property')
+            .then(response => {
+                const data = response.data;
+                if(data.code == 200){
+                    this.curUserProperty = data.data;
+                }else{
+                     this.$notify(response.data.msg);
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        connection() {
+
+             let token = this.sessionRainbow.token;
+             let currentUser = JSON.parse(this.sessionRainbow.user);
+
+             let cid = this.localRainbow.cid;
+            // 建立连接对象
+            let socket = new SockJS('/ws/rainbow-ws?sid='+token+"&cid="+cid);
+            // 获取STOMP子协议的客户端对象
+            this.stompClient = Stomp.over(socket);
+            // 定义客户端的认证信息,按需求配置
+            this.stompClient.debug = null;
+            // 向服务器发起websocket连接
+            this.stompClient.connect({server:"Apache/1.3.9"},() => {
+                let userId = currentUser.userId;
+                let sub = '/user/'+userId+'/message';
+                this.stompClient.subscribe(sub, (msg) => { // 订阅服务端提供的某个topic
+                    console.log(JSON.parse(msg.body));
+                    this.$store.commit('setSession',JSON.parse(msg.body));
+                });
+
+              
+            }, (err) => {
+                // 连接发生错误时的处理函数
+                console.log('失败')
+                console.log(err);
+            });
+            console.log(this.stompClient);
+        },    //连接 后台
+        disconnect() {
+            if (this.stompClient) {
+                this.stompClient.disconnect();
+            }
+        },  // 断开连接
+
+        doMessage(msg){
+            console.log("send message:"+ msg);
+            console.log(this.stompClient);
+            this.stompClient.send("/app/message",
+            // headers,
+            {}, 
+
+            JSON.stringify(msg)
+            );
+        },
+        beforeDestroy: function () {
+            // 页面离开时断开连接,清除定时器
+            this.disconnect();
+        // clearInterval(this.timer);
+        },
+       
+        loadChats(){
             this.duihua = false;
             this.yonghu = this.bangzhu = this.shezhi = true; 
             this.mediumComName = Sessions;
@@ -146,11 +191,31 @@ export default {
             this.yonghu = this.bangzhu = this.duihua = true; 
             this.mediumComName = Settings;
         },
-        rightCom(rightCom){
+        rightCom(rightCom,receiver){
+            console.log(receiver);
+            this.curReceiver = receiver;
             this.rightComName = rightCom;
         }
-       
     },
+      created(){
+      
+        this.sessionRainbow = sessionStorage.getItem("rainbow");
+        this.sessionRainbow = JSON.parse(this.sessionRainbow);
+        console.log(this.sessionRainbow);
+
+            //local storage
+        this.localRainbow = localStorage.getItem("rainbow");
+        this.localRainbow = JSON.parse(this.localRainbow);
+
+        let token = this.sessionRainbow.token;
+
+        HttpApi.defaults.headers.common['Authorization'] = "berarer " + token;
+        
+        this.initWebSocket();
+        this.initCurrentUserProperty();
+        },
+
+    
     components:{
         //right
         Flow,
@@ -160,7 +225,8 @@ export default {
         //medium
         Sessions,
         Contacts
-    }
+    },
+   
 }
 </script>
 
@@ -217,6 +283,13 @@ export default {
     line-height: 60px;
 }
 
+.icon-avatar{
+    width: 32px;
+    height: 32px;
+    border-radius: 32px;
+    margin-top: 14px;
+}
+
 .left > div > div{
     width: 100%;
     height: 60px;
@@ -230,193 +303,5 @@ export default {
     cursor: pointer;
 
 }
-/* .medium .label{
-    width: 100%;
-    height: 5%;
-    min-height: 35px;
-    text-align: center;
-    line-height: 35px;
-    box-shadow: 0px 10px 10px -5px #1d1d1d ;
-    position: relative;
-}
-
-
-
-.medium .label div{
-    height: 100%;
-    float: right;
-    line-height: 35px;
-    position: absolute;
-    right: 10px;
-    top: -11px;
-}
-
-.medium .label div span{
-    font-size: 20px;
-}
-
-.medium .search{
-    height: 10%;
-    min-height: 70px;
-
-}
-
-.medium .search input{
-    margin-top: 10%;
-    width: 85%;
-    height: 50%;
-    background-color: #333;
-    border: 0;
-    border-radius: 5px;
-    padding-left: 10px;
-    color: white;
-
-}
-
-
-.list{
-  width: 100%;
-  height: 87%;
-  overflow-y:auto;
-  border: 0px;
-}
-
-.list > div{
-    background-color: #444;
-    width: 100%;
-    height: 45px;
-    margin-top: 4px;
-    display: flex;
-    display: -webkit-flex;
-    flex-direction: row;
-    justify-content: center;
-}
-
-.list > div > div{
-    width: 85%;
-    height: 100%;
-    display: flex;
-    display: -webkit-flex;
-    justify-content: flex-start;
-    flex-direction: row;
-    align-items: center;
-}
-
-.contactAvator{
-    width: 35px;
-    height: 35px;
-}
-
-.contactAvator > img{
-    width: 35px;
-    height: 35px;
-    border-radius: 35px;
-}
-
-.contactInfo{
-    margin-left: 5%;
-    height: 45px;
-    width: 60%;
-    font-size: 13px;
-    display: flex;
-    display: -webkit-flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.contactTime{
-    height: 35px;
-    font-size: 12px;
-} */
-
-/* .right .label{
-    border-bottom: 1px solid #b2b2b2;
-    line-height: 35px;
-    text-align: center;
-}
-
-.right .label span{
-    height: 35px;
-}
-
-.right .content{
-    height: 85%;
-    overflow-y:auto;
-}
-
-.typing{
-    height: 10%;
-    min-height: 70px; 
-    max-height: 70px;
-    width: 100%;
-    border-top: 1px solid #b2b2b2;
-    overflow: hidden;
-    position: absolute;
-    bottom: 0px;
-}
-
-.typing textarea{
-    width: 100%;
-    border: 0;
-    height: 100%;
-    resize: none;
-    padding: 15px;
-}
-
-
-.content > div{
-    padding: 15px 10px;
-  
-}
-
-.content .me .bubble{
-    display: flex; 
-    display: -webkit-flex;
-    flex-direction: row;
-    justify-content: flex-end;
-} 
-
-.content .me .bubble div{
-    max-width: 60%;
-    background-color: #fff;
-    word-wrap:break-word;  
-    word-break:break-all;  
-    border-radius: 20px 0 20px 20px;
-    background-color: #25B6D1;
-    padding: 5px 10px;
-    color: white;
-}
-
-.content div .time{
-    text-align: center;
-    color: #b2b2b2;
-    font-size: 14px;
-}
-
-.content .you .bubble{
-    width: 100%;
-    padding: 5px 0;
-    display: -webkit-flex;
-    justify-content: flex-start;
-}
-
-.content .you >.bubble div{
-    max-width: 60%;
-    background-color: #fff;
-    word-wrap:break-word;  
-    word-break:break-all;
-    border-radius: 0 20px 20px 20px;
-    background-color: #2DCB70;
-    padding: 5px 10px;
-    color: white;
-}
-
-.content img{
-    width: 35px;
-    height: 35px;
-    border-radius: 35px;
-} */
-
 
 </style>

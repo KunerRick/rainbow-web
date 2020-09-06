@@ -21,7 +21,7 @@
             </div>
 
         </div>
-        <div class="exit">
+        <div class="exit" @click.stop="exit">
             <span>登出</span>
         </div>
     </div>
@@ -34,6 +34,9 @@ export default {
     methods:{
         loadMe(){
             this.$emit("func","Me");
+        },
+        exit(){
+             this.$router.replace({path:"/"});
         }
     }
 }

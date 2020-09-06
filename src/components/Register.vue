@@ -1,24 +1,35 @@
 <template>
     <div class="container">
         <div class="login-text">Let's </div> 
-        <div class="chat-panel-text">Sign Up</div>
+        <div class="chat-panel-text">注册</div>
 
         <div>
-            <div class="username-text">USERNAME</div>
+            <div class="username-text">邮箱</div>
+            <input class="username-input email-input" type="text" v-model="email">
+            <a @click.stop="sendEmail">发送验证码</a>
+        </div>
+
+         <div>
+            <div class="username-text">验证码</div>
+            <input class="username-input" type="text" v-model="code">
+        </div>
+
+        <div>
+            <div class="username-text">账号</div>
             <input class="username-input" type="text" v-model="username">
         </div>
 
         <div>
-            <div class="password-text">PASSWORD</div>
+            <div class="password-text">密码</div>
             <input class="password-input" type="password" v-model="passwd">
         </div>
 
         <div>
-            <div class="password-text">NICKNAME</div>
+            <div class="password-text">昵称</div>
             <input class="password-input" type="text" v-model="nickname">
         </div>
 
-        <div class="f-s-text"><router-link class="authLink" to="/reset">forget the password ?</router-link> or <router-link class="authLink" to="/login">sign in</router-link></div>
+        <div class="f-s-text"><router-link class="authLink" to="/reset">忘记密码 ?</router-link> or <router-link class="authLink" to="/login">登入</router-link></div>
         <div class="signIn-div">
             <input type="button" value="SIGN UP" class="signIn-btn" @click.stop="signUp"/>
         </div>
@@ -26,7 +37,7 @@
 </template>
 
 <script>
-import HttpApi from '@/util/HttpUtils.js'
+import HttpApi from '@/util/http.js'
 
 export default {
     name: 'Regisger',
@@ -34,20 +45,45 @@ export default {
         return {
             username:null,
             passwd:null,
-            nickname:null
+            nickname:null,
+            code:null,
+            email:null
         }
     },
     methods:{
         signUp(){
+            
             HttpApi.put('/sys/v1/signUp', {
                 username: this.username,
                 passwd: this.passwd,
-                nickname: this.nickname
+                nickname: this.nickname,
+                code:this.code,
+                email:this.email
             })
-            .then(function (response) {
-                console.log(response);
+            .then(response => {
+                if(response.data.code === 200){
+                    this.$notify("注册成功");
+                    this.$router.push({path:"/login"})
+                }else{
+                     this.$notify(response.data.msg);
+                }
             })
             .catch(function (error) {
+                this.$notify(error);
+            });
+        },
+        sendEmail(){
+            HttpApi.put('/sys/v1/checkcode/sign/up', {
+                email: this.email
+            })
+            .then(response => {
+                if(response.data.code === 200){
+                    this.$notify("验证码已发送");
+                }else{
+                     this.$notify(response.data.msg);
+                }
+            })
+            .catch(error=> {
                 console.log(error);
             });
         }
@@ -60,9 +96,17 @@ export default {
    .container{
         min-width: 400px;
         width: 400px;
-        height: 400px;
+        height: 700px;
         min-height: 400px;
         display: block;
+    }
+
+    a{
+        font-size: 12px;
+        cursor: pointer;
+    }
+    a:hover{
+        text-decoration: underline;
     }
     .login-text{
         position: absolute;
@@ -70,8 +114,9 @@ export default {
     .chat-panel-text{
         font-size: 80px;
     }
+
     .username-text{
-        margin-top: 32px;
+        margin-top: 16px;
     }
     .password-text{
         margin-top: 16px;

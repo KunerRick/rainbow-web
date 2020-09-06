@@ -10,21 +10,15 @@
             <input type="text">
         </div>
         <div class="list">
-            <div v-for="item in contacts" :key="item.name">
+            <div v-for="(item, index) in contacts" :key="item.name" @click.stop="loadChatCom(index)">
                 <div>
                     <div class="contactAvator">
-                        <img :src="item.avator">
+                        <img :src="item.avatar">
                     </div>
                     <div class="contactInfo">
                         <div class="contactName">
-                            <span>{{item.nickname}}</span>
+                            <span>{{item.remark}}</span>
                         </div>
-                        <div class="contactContent">
-                            <span>{{item.content}}</span>
-                        </div>
-                    </div>
-                    <div class="contactTime">
-                        <span>{{item.time}}</span>
                     </div>
                 </div>
             </div>
@@ -34,28 +28,40 @@
 
 
 <script>
+import HttpApi from '../../util/http.js'
 export default {
     
     name:"Contacts",
      data(){
         return {
-               contacts:[
-                {
-               
-                    "avator": require("@/assets/logo.png"),
-                    "nickname":"tom",
-                    "content":"how r u?",
-                    "time":"10:32"
-                    
-                }
-                
-            ]
+            contacts:[]
         }
     },
     methods:{
          loadAddContactCom(){
             this.$emit('func',"AddContact");
         },
+
+        loadChatCom(index){
+           this.$emit("func","Flow",this.contacts[index]); 
+        }
+    },
+    created(){
+        HttpApi.get('/contact/v1/list', {
+                username: this.username,
+                passwd: this.passwd
+            })
+            .then(response => {
+                const data = response.data;
+                if(data.code == 200){
+                    this.contacts = data.data;
+                }else{
+                     this.$notify(response.data.msg);
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 }
 </script>
@@ -145,7 +151,7 @@ export default {
 }
 
 .contactInfo{
-    margin-left: 5%;
+    margin-left: 10%;
     height: 45px;
     width: 60%;
     font-size: 13px;
@@ -154,11 +160,6 @@ export default {
     justify-content: center;
     flex-direction: column;
     align-items: flex-start;
-}
-
-.contactTime{
-    height: 35px;
-    font-size: 12px;
 }
 
 </style>>

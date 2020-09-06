@@ -4,15 +4,15 @@
         <div class="chat-panel-text">Chat Panel</div>
 
         <div>
-            <div class="username-text">USERNAME</div>
+            <div class="username-text">账户</div>
             <input class="username-input" type="text" v-model="username">
         </div>
 
         <div>
-            <div class="password-text">PASSWORD</div>
+            <div class="password-text">密码</div>
             <input class="password-input" type="password" v-model="passwd">
         </div>
-        <div class="f-s-text">instance<router-link class="authLink" to="/reset">forget the password ?</router-link> or <router-link class="authLink" to="/register">sign up</router-link></div>
+        <div class="f-s-text"><router-link class="authLink" to="/reset">忘记密码 ?</router-link> or <router-link class="authLink" to="/register">注册</router-link></div>
         <div class="signIn-div">
             <input type="button" value="SIGN IN" class="signIn-btn" @click="signIn"/>
         </div>
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import HttpApi from '@/util/HttpUtils.js'
+import HttpApi from '@/util/http.js'
 
 export default {
     name: 'Login',
@@ -36,17 +36,28 @@ export default {
                 username: this.username,
                 passwd: this.passwd
             })
-            .then(function (response) {
-                console.log(response);
-                
+            .then(response => {
+                const data = response.data;
+                if(data.code == 200){
+                    const token = data.data;
+                    let parts = token.split(".");
+					if (parts.length == 2 && token.endsWith(".")) {
+                        parts = [parts[0],parts[1],""];
+					}
+                    let payloadJson = atob(parts[1]);
+                    let rainbow = {
+                        'user' : payloadJson,
+                        'token' : token
+                    } 
+                    sessionStorage.setItem("rainbow",JSON.stringify(rainbow));
+                    this.$router.replace({path:"/chat"});
+                }else{
+                     this.$notify(response.data.msg);
+                }
             })
             .catch(function (error) {
                 console.log(error);
             });
-        //    sign in
-        //sign in success
-        // this.$router.replace({path:"/chat"})
-        //sign in fail
 
        }
     }

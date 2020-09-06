@@ -1,15 +1,15 @@
 <template>
     <div>
         <div class="label">
-            <span>Tom Smith</span>
+            <span>{{receiver.remark}}</span>
         </div>
         <div class="content">
-            <div class="you">
+            <!-- <div class="you">
                     <div class="time">
                     <span>10:30</span>
                 </div>
                 <div class="bubble">
-                    <img src="@/assets/logo.png" alt="">
+                    <img v-bind:src="receiver.avatar" alt="">
                     <div>How R U ?</div>
                 </div>
             </div>
@@ -22,17 +22,78 @@
                     <div>I'm Fine,thank you</div>
                     <img src="@/assets/logo.png" alt="">
                 </div>
+            </div> -->
+
+             <div :class="item.sender === receiver.userId?'you':'me'" v-for="item in flow" :key="item.id">
+                <div class="time">
+                    <span>{{item.date}}</span>
+                </div>
+                <div class="bubble" v-if="item.sender == receiver.userId">
+                     <img v-bind:src="receiver.avatar" alt="">
+                    <div>{{item.content}}</div>
+                    <div>{{item.receiver == receiver.userId}}</div>
+                </div>
+                <div class="bubble" v-else>
+                    <div>{{item.content}}</div>
+                    <img :src="curUserProperty.avatar" alt="">
+                </div>
             </div>
+
         </div>
         <div class="typing">
-            <textarea placeholder="typing a message ..."></textarea>
+            <textarea placeholder="enter to send" v-model="msg" @keydown.enter="send2" @keyup.enter="send"></textarea>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-    name:"Flow"
+    name:"Flow",
+    data(){
+        return {
+            msg : null,
+            currentUser: null,
+            // flow:[
+            //     {
+            //         "id":"5f54dfed5e0a838c0b823ca7",
+            //         "msgType":1,
+            //         "content":"123",
+            //         "sender":"5f5364955e0a5556c440ecfd",
+            //         "receiver":"5f5364955e423c440ecfd",
+            //         "status":0,
+            //         "date":1599397869182
+            //     }
+            // ],
+            flow:this.$store.getters.getSession
+        }
+    },
+    props: ['receiver','curUserProperty'],
+    methods:{
+        send2(event){
+            event.preventDefault();
+
+        },
+        send(){
+           
+            let userId = this.currentUser.userId;
+            let message = {
+                id:null,
+                msgType:1,
+                content: this.msg,
+                sender: userId,
+                receiver:this.receiver.userId,
+                status:0,
+                date:new Date().getTime()
+            }
+            this.$emit("send",message);
+            this.msg = null;
+        }
+    },
+    created(){
+        let sessionRainbow = sessionStorage.getItem("rainbow");
+        sessionRainbow = JSON.parse(sessionRainbow);
+        this.currentUser = JSON.parse(sessionRainbow.user);
+    }
 }
 </script>
 
@@ -44,6 +105,7 @@ export default {
     border-bottom: 1px solid #b2b2b2;
     line-height: 35px;
     text-align: center;
+    right: 0;
 }
 
 .right .label span{
@@ -51,7 +113,7 @@ export default {
 }
 
 .right .content{
-    height: 85%;
+    height: 100%;
     overflow-y:auto;
 }
 
@@ -71,12 +133,12 @@ export default {
     border: 0;
     height: 100%;
     resize: none;
-    padding: 15px;
+    padding: 5px;
 }
 
 
 .content > div{
-    padding: 15px 10px;
+    padding: 5px 10px;
   
 }
 
@@ -89,6 +151,7 @@ export default {
 
 .content .me .bubble div{
     max-width: 60%;
+    margin: 5px 0 0 5px;
     background-color: #fff;
     word-wrap:break-word;  
     word-break:break-all;  
@@ -113,7 +176,7 @@ export default {
 
 .content .you >.bubble div{
     max-width: 60%;
-    background-color: #fff;
+    margin: 5px 0 0 5px;
     word-wrap:break-word;  
     word-break:break-all;
     border-radius: 0 20px 20px 20px;
