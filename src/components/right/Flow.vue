@@ -3,7 +3,7 @@
         <div class="label">
             <span>{{receiver.remark}}</span>
         </div>
-        <div class="content">
+        <div class="content" id="content">
             <!-- <div class="you">
                     <div class="time">
                     <span>10:30</span>
@@ -24,18 +24,17 @@
                 </div>
             </div> -->
 
-             <div :class="item.sender === receiver.userId?'you':'me'" v-for="item in flow" :key="item.id">
+             <div :class="item.sender === receiver.userId?'you':'me'" v-for="(item,index) in flow" :key="index">
                 <div class="time">
-                    <span>{{item.date}}</span>
+                    <span>{{item.date | format}}</span>
                 </div>
                 <div class="bubble" v-if="item.sender == receiver.userId">
                      <img v-bind:src="receiver.avatar" alt="">
                     <div>{{item.content}}</div>
-                    <div>{{item.receiver == receiver.userId}}</div>
                 </div>
                 <div class="bubble" v-else>
                     <div>{{item.content}}</div>
-                    <img :src="curUserProperty.avatar" alt="">
+                    <img :src="userProperty.avatar" alt="">
                 </div>
             </div>
 
@@ -52,7 +51,8 @@ export default {
     data(){
         return {
             msg : null,
-            currentUser: null,
+            user: null,
+            userProperty:null,
             // flow:[
             //     {
             //         "id":"5f54dfed5e0a838c0b823ca7",
@@ -64,18 +64,25 @@ export default {
             //         "date":1599397869182
             //     }
             // ],
-            flow:this.$store.getters.getSession
+            flow:this.$store.getters.getSession,
+            receiver:null,
         }
     },
-    props: ['receiver','curUserProperty'],
+    watch:{
+      flow:function(){
+          this.$nextTick(function(){
+              let content = document.getElementById("content");
+              content.scrollTo(0,content.scrollHeight);
+          });
+       }
+    },
     methods:{
         send2(event){
             event.preventDefault();
 
         },
         send(){
-           
-            let userId = this.currentUser.userId;
+            let userId = this.user.userId;
             let message = {
                 id:null,
                 msgType:1,
@@ -84,28 +91,59 @@ export default {
                 receiver:this.receiver.userId,
                 status:0,
                 date:new Date().getTime()
-            }
+            };
             this.$emit("send",message);
             this.msg = null;
         }
     },
     created(){
-        let sessionRainbow = sessionStorage.getItem("rainbow");
-        sessionRainbow = JSON.parse(sessionRainbow);
-        this.currentUser = JSON.parse(sessionRainbow.user);
+       this.receiver = this.$store.getters.getReceivert;
+       this.user = this.$store.getters.getUser;
+       this.userProperty = this.$store.getters.getUserPropery;
+    },
+    filters:{
+        format:function(time){
+            time = new Date(time);
+            let fmt = '';
+            if(Math.abs(new Date().getMinutes() - time.getMinutes()) <=5 ){
+                return;
+            }
+            else if(time.getDate() == new Date().getDate()){
+                fmt = "HH:mm";
+            }else{
+                fmt = "MM-dd HH:mm";
+            }
+            var o = {
+                        "M+": time.getMonth() + 1, // 月份
+                        "d+": time.getDate(), // 日
+                        "H+": time.getHours(), // 小时
+                        "m+": time.getMinutes(), // 分
+                        "s+": time.getSeconds(), // 秒
+                        "q+": Math.floor((time.getMonth() + 3) / 3), // 季度
+                        "S": time.getMilliseconds() // 毫秒
+                    };
+            if (/(y+)/.test(fmt))
+                fmt = fmt.replace(RegExp.$1, (time.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o)
+                if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            return fmt;
+        }
     }
+
 }
 </script>
 
 <style scoped>
+.right > div{
+    height: 100%;
+    overflow: hidden;
+}
+
 .right .label{
-    /* height: 5%; */
-    /* min-height: 35px; */
-    /* max-height: 35px; */
+    height: 35px;
     border-bottom: 1px solid #b2b2b2;
     line-height: 35px;
     text-align: center;
-    right: 0;
 }
 
 .right .label span{
@@ -113,8 +151,8 @@ export default {
 }
 
 .right .content{
-    height: 100%;
-    overflow-y:auto;
+    height: 85%;
+    overflow-y:scroll;
 }
 
 .typing{
@@ -123,19 +161,18 @@ export default {
     max-height: 70px;
     width: 100%;
     border-top: 1px solid #b2b2b2;
-    overflow: hidden;
-    position: absolute;
     bottom: 0px;
 }
 
 .typing textarea{
+    display: block;
     width: 100%;
     border: 0;
     height: 100%;
     resize: none;
     padding: 5px;
+    
 }
-
 
 .content > div{
     padding: 5px 10px;

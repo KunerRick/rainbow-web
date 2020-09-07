@@ -19,27 +19,13 @@ import 'vue2-animate/dist/vue2-animate.min.css'
     },
     created(){
       // get cid
-      let localRainbow = localStorage.getItem("rainbow");
-      if(localRainbow){
-        localRainbow = JSON.parse(localRainbow);
-         let cid = localRainbow.cid;
+      let cid = localStorage.getItem("cid");
          if(!cid){
             var rString = randomString(8, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
-            let rainbow = {
-              cid:rString
-            };
-            localStorage.setItem("rainbow",JSON.stringify(rainbow));
+            localStorage.setItem("cid",rString);
          }
-      }else{
-        let rString = randomString(8, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
-        let rainbow = {
-          cid:rString
-        };
-        localStorage.setItem("rainbow",JSON.stringify(rainbow));
       }
-      
     }
-  }
 
 
   function randomString(length, chars) {

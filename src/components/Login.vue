@@ -45,14 +45,37 @@ export default {
                         parts = [parts[0],parts[1],""];
 					}
                     let payloadJson = atob(parts[1]);
-                    let rainbow = {
-                        'user' : payloadJson,
-                        'token' : token
-                    } 
-                    sessionStorage.setItem("rainbow",JSON.stringify(rainbow));
-                    this.$router.replace({path:"/chat"});
+
+                    //cache user info to vuex
+                    this.$store.commit('setUser',JSON.parse(payloadJson));
+                   
+                    //cache user info and token
+                    sessionStorage.setItem("user",payloadJson);
+
+                     this.$store.commit('setToken',token);
+                    sessionStorage.setItem("token",token);
+
+                    HttpApi.defaults.headers.common['Authorization'] = "berarer " + token;
+
+                    //get user property
+                    return HttpApi.get('/user/v1/property');
+                       
+                    
                 }else{
                      this.$notify(response.data.msg);
+                }
+            })
+            .then(response => { // 
+                const data = response.data;
+                if(data.code == 200){
+                    let curUserProperty = data.data;
+                    //cache user property 
+                    sessionStorage.setItem("userProperty",JSON.stringify(curUserProperty));
+                    //cache user property to vuex
+                    this.$store.commit('setUserProperty',curUserProperty);
+                    this.$router.replace({path:"/chat"});
+                }else{
+                        this.$notify(response.data.msg);
                 }
             })
             .catch(function (error) {

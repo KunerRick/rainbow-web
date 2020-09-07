@@ -43,7 +43,8 @@ export default {
         },
 
         loadChatCom(index){
-           this.$emit("func","Flow",this.contacts[index]); 
+            this.$store.commit('setReceiver',this.contacts[index]);
+            this.$emit("func","Flow"); 
         }
     },
     created(){

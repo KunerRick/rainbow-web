@@ -18,7 +18,7 @@
                         <span :class="['iconfont', shezhi?'icon-shezhi':'icon-shezhitianchong']"></span>
                     </div>
                     <div>
-                        <img class="icon-avatar" :src="curUserProperty.avatar" alt="" />
+                        <img class="icon-avatar" :src="userProperty.avatar" alt="" />
                     </div>
                 </div>
             </div>
@@ -32,10 +32,7 @@
                             mode="out-in">
                     <component :is="rightComName" 
                                 style="animation-duration: .2s" 
-                                @send="doMessage"
-                                v-bind:receiver="curReceiver"
-                                v-bind:curUserProperty="curUserProperty"
-                                ></component>
+                                @send="doMessage"></component>
                 </transition>
             </div>
         </div>
@@ -74,22 +71,15 @@ export default {
             bangzhu:true,
             shezhi:true,
             mediumComName:"Sessions",
-            rightComName: 'Flow',
+            rightComName: null,
 
             stompClient:null,
             timer:'',
-            curReceiver:null,
+            userProperty:null,
 
-            sessionRainbow : null,
-            localRainbow : null,
-
-            curUserProperty:null,
+            cid:null,
 
         }
-    },
-    props:{
-        receiver : Object,
-        currentUserProperty:Object,
     },
     methods:{
         initWebSocket() {
@@ -105,45 +95,30 @@ export default {
             //     }
             // }, 5000);
         },
-        initCurrentUserProperty(){
-            HttpApi.get('/user/v1/property')
-            .then(response => {
-                const data = response.data;
-                if(data.code == 200){
-                    this.curUserProperty = data.data;
-                }else{
-                     this.$notify(response.data.msg);
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-        },
         connection() {
 
-             let token = this.sessionRainbow.token;
-             let currentUser = JSON.parse(this.sessionRainbow.user);
+             let token = this.$store.getters.getToken;
 
-             let cid = this.localRainbow.cid;
             // 建立连接对象
-            let socket = new SockJS('/ws/rainbow-ws?sid='+token+"&cid="+cid);
+            let socket = new SockJS('/ws/rainbow-ws?sid='+token+"&cid="+this.cid);
             // 获取STOMP子协议的客户端对象
             this.stompClient = Stomp.over(socket);
             // 定义客户端的认证信息,按需求配置
-            this.stompClient.debug = null;
+            // this.stompClient.debug = null;
             // 向服务器发起websocket连接
             this.stompClient.connect({server:"Apache/1.3.9"},() => {
-                let userId = currentUser.userId;
+                let userId = this.$store.getters.getUser.userId;
                 let sub = '/user/'+userId+'/message';
                 this.stompClient.subscribe(sub, (msg) => { // 订阅服务端提供的某个topic
-                    console.log(JSON.parse(msg.body));
                     this.$store.commit('setSession',JSON.parse(msg.body));
+                  
+                    
                 });
 
               
             }, (err) => {
                 // 连接发生错误时的处理函数
-                console.log('失败')
+                console.log('失败');
                 console.log(err);
             });
             console.log(this.stompClient);
@@ -191,30 +166,35 @@ export default {
             this.yonghu = this.bangzhu = this.duihua = true; 
             this.mediumComName = Settings;
         },
-        rightCom(rightCom,receiver){
-            console.log(receiver);
-            this.curReceiver = receiver;
+        rightCom(rightCom){
             this.rightComName = rightCom;
         }
     },
-      created(){
-      
-        this.sessionRainbow = sessionStorage.getItem("rainbow");
-        this.sessionRainbow = JSON.parse(this.sessionRainbow);
-        console.log(this.sessionRainbow);
+    created(){
+        //get user from session storage
+        let userJson = sessionStorage.getItem("user");
+        this.$store.commit("setUser",JSON.parse(userJson));
+
+        //get user property from session storage
+        let userPropertyJson = sessionStorage.getItem("userProperty");
+        let userProperty = JSON.parse(userPropertyJson);
+        this.$store.commit("setUserProperty",userProperty);
 
             //local storage
-        this.localRainbow = localStorage.getItem("rainbow");
-        this.localRainbow = JSON.parse(this.localRainbow);
-
-        let token = this.sessionRainbow.token;
-
+        let token = sessionStorage.getItem("token");
+        this.$store.commit("setToken",token);
         HttpApi.defaults.headers.common['Authorization'] = "berarer " + token;
-        
-        this.initWebSocket();
-        this.initCurrentUserProperty();
-        },
 
+        //cid
+        this.cid = localStorage.getItem("cid")
+
+        this.userProperty = userProperty;
+        
+        
+    },
+    mounted(){
+        this.initWebSocket();
+    },
     
     components:{
         //right
@@ -228,10 +208,12 @@ export default {
     },
    
 }
+
 </script>
 
 
 <style scoped>
+
 .container{
     width: 100%;
     height: 100%;
