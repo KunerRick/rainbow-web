@@ -7,21 +7,21 @@
             <input type="text">
         </div>
         <div class="list">
-            <div v-for="item in contacts" :key="item.name">
-                <div @click.stop="loadContactInfo">
+            <div v-for="(item,index) in sessions" :key="item.name">
+                <div @click.stop="loadFlowCom(index)">
                     <div class="contactAvator">
-                        <img :src="item.avator">
+                        <img :src="item.avatar">
                     </div>
                     <div class="contactInfo">
                         <div class="contactName">
-                            <span>{{item.nickname}}</span>
+                            <span>{{item.remark}}</span>
                         </div>
                         <div class="contactContent">
                             <span>{{item.content}}</span>
                         </div>
                     </div>
                     <div class="contactTime">
-                        <span>{{item.time}}</span>
+                        <span>{{item.a}}</span>
                     </div>
                 </div>
             </div>
@@ -36,20 +36,12 @@ export default {
     data(){
         return {
             sessions:[],
-               contacts:[
-                {
-                    "avator": require("@/assets/logo.png"),
-                    "nickname":"tom",
-                    "content":"how r u?",
-                    "time":"10:32"
-                }
-                
-            ]
         }
     },
     methods:{
-        loadContactInfo(){
-           this.$emit("func","Contact"); 
+        loadFlowCom(index){
+            this.$store.commit("setReceiver",this.sessions[index])
+            this.$emit("func","Flow"); 
         }
     },
     created(){
@@ -57,6 +49,7 @@ export default {
         if(sessions){
             this.sessions = JSON.parse(sessions);
         }
+        console.log(this.sessions);
         
     }
 }

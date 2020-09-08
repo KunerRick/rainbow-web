@@ -10,7 +10,7 @@
             <input type="text">
         </div>
         <div class="list">
-            <div v-for="(item, index) in contacts" :key="item.name" @click.stop="loadChatCom(index)">
+            <div v-for="(item, index) in contacts" :key="item.name" @click.stop="loadContactCom(index)">
                 <div>
                     <div class="contactAvator">
                         <img :src="item.avatar">
@@ -42,9 +42,11 @@ export default {
             this.$emit('func',"AddContact");
         },
 
-        loadChatCom(index){
+        loadContactCom(index){
             // this.$store.commit('setReceiver',this.contacts[index]);
-            this.$emit("func","Contact",this.contacts[index]); 
+            this.$store.commit("setContact",this.contacts[index])
+            this.$emit("func","Contact"); 
+            this.$forceUpdate();
         }
     },
     created(){

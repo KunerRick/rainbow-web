@@ -5,23 +5,23 @@
         </div>
         <div class="info">
             <div class="avator">
-                <img src="@/assets/logo.png" alt="">
+                <img :src="contact.avatar" alt="">
             </div>
             <div class="infoDetails">
                 <table>
                     <tr>
                         <td>昵称</td>
-                        <td>好的的飞机</td>
+                        <td>{{contact.nickname}}</td>
                     </tr>
 
                      <tr>
                         <td>账户</td>
-                        <td>cafebabe</td>
+                        <td>{{contact.username}}</td>
                     </tr>
 
                      <tr>
                         <td>邮箱</td>
-                        <td>ch3ng@gmail.com</td>
+                        <td>{{contact.email}}</td>
                     </tr>
 
                 </table>
@@ -34,21 +34,37 @@
 <script>
 export default {
     name:"Contact",
-    props:[
-        'contact1'
-    ],
     data(){
         return {
-            // contactInfo: this.contact,
+            contact: this.$store.getters.getContact,
         }
     },
     methods:{
         sendTo(){
-          console.log(this.contact);  
+            //set current receiver
+            this.$store.commit("setReceiver",this.contact);
+            //cache current user for session list
+            let sessions = sessionStorage.getItem("sessions");
+            if(sessions){
+                sessions = JSON.parse(sessions);
+                if(!sessions[this.contact.userId]){
+                    sessions[this.contact.userId] = this.contact;
+                    sessionStorage.setItem("sessions",JSON.stringify(sessions))
+                }
+            }else{
+                sessions = {};
+                sessions[this.contact.userId] = this.contact;
+                sessionStorage.setItem("sessions",JSON.stringify(sessions))
+            }
+            
+            console.log("123");
+            this.$emit("func","Flow"); 
+
         }
     },
     created(){
-        console.log(this.contact);
+        //TODO
+
     }
 }
 </script>

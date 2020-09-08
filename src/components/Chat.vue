@@ -33,7 +33,8 @@
                     <component :is="rightComName" 
                                 style="animation-duration: .2s" 
                                 @send="doMessage"
-                                v-bind='contact1'></component>
+                                @func="rightCom"
+                                :key='incrementKey'></component>
                 </transition>
             </div>
         </div>
@@ -81,10 +82,9 @@ export default {
 
             cid:null,
 
+            incrementKey:0,
+
         }
-    },
-    props:{
-        contact1:Object
     },
     methods:{
         initWebSocket() {
@@ -126,7 +126,6 @@ export default {
                 console.log('失败');
                 console.log(err);
             });
-            console.log(this.stompClient);
         },    //连接 后台
         disconnect() {
             if (this.stompClient) {
@@ -135,8 +134,6 @@ export default {
         },  // 断开连接
 
         doMessage(msg){
-            console.log("send message:"+ msg);
-            console.log(this.stompClient);
             this.stompClient.send("/app/message",
             // headers,
             {}, 
@@ -171,9 +168,8 @@ export default {
             this.yonghu = this.bangzhu = this.duihua = true; 
             this.mediumComName = Settings;
         },
-        rightCom(rightCom,contact){
-            console.log(contact);
-            this.contact1 = "123";
+        rightCom(rightCom){
+            this.incrementKey+=1;
             this.rightComName = rightCom;
             
         }

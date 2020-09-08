@@ -17,8 +17,12 @@ const store = new Vuex.Store({
     userProperty:null,
     receiver:null,
     token:null,
+    contact:null,
   },
   mutations: {
+    setContact(state,contact){
+      state.contact = contact;
+    },
     setSession (state,message) {
       state.session.push(message);
     },
@@ -36,6 +40,9 @@ const store = new Vuex.Store({
     },
   },
   getters: {
+    getContact: state => {
+      return state.contact;
+    },
     getToken: state => {
       return state.token;
     },
