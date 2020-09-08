@@ -8,7 +8,7 @@
         </div>
         <div class="list">
             <div v-for="item in contacts" :key="item.name">
-                <div @click.stop="loadChatCom">
+                <div @click.stop="loadContactInfo">
                     <div class="contactAvator">
                         <img :src="item.avator">
                     </div>
@@ -35,6 +35,7 @@ export default {
     name:"Sessions",
     data(){
         return {
+            sessions:[],
                contacts:[
                 {
                     "avator": require("@/assets/logo.png"),
@@ -47,9 +48,16 @@ export default {
         }
     },
     methods:{
-        loadChatCom(){
-           this.$emit("func","Flow"); 
+        loadContactInfo(){
+           this.$emit("func","Contact"); 
         }
+    },
+    created(){
+        let sessions = sessionStorage.getItem("sessions");
+        if(sessions){
+            this.sessions = JSON.parse(sessions);
+        }
+        
     }
 }
 </script>

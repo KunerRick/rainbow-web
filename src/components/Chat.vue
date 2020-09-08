@@ -32,7 +32,8 @@
                             mode="out-in">
                     <component :is="rightComName" 
                                 style="animation-duration: .2s" 
-                                @send="doMessage"></component>
+                                @send="doMessage"
+                                v-bind='contact1'></component>
                 </transition>
             </div>
         </div>
@@ -48,6 +49,7 @@ import "@/assets/fonts/iconfont.css"
 import AddContact from '@/components/right/AddContact'
 import Flow from '@/components/right/Flow'
 import Me from '@/components/right/Me'
+import Contact from '@/components/right/Contact'
 
 // import medium
 import Sessions from '@/components/medium/Sessions'
@@ -80,6 +82,9 @@ export default {
             cid:null,
 
         }
+    },
+    props:{
+        contact1:Object
     },
     methods:{
         initWebSocket() {
@@ -166,8 +171,11 @@ export default {
             this.yonghu = this.bangzhu = this.duihua = true; 
             this.mediumComName = Settings;
         },
-        rightCom(rightCom){
+        rightCom(rightCom,contact){
+            console.log(contact);
+            this.contact1 = "123";
             this.rightComName = rightCom;
+            
         }
     },
     created(){
@@ -202,6 +210,8 @@ export default {
         AddContact,
         Settings,
         Me,
+        Contact,
+        
         //medium
         Sessions,
         Contacts
