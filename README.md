@@ -1,24 +1,22 @@
 # rainbow-web
 
-## Project setup
+rainbow-web是一个基于vue2的实现rainbow系统的IM web客户端程序
+
+## 介绍
+
+基于vue2,sockjs,stomp的web客户端程序
+
+## 安装依赖
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### 编译并运行
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+### 构建
 ```
 npm run build
 ```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
