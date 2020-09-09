@@ -49,8 +49,6 @@ export default {
         if(sessions){
             this.sessions = JSON.parse(sessions);
         }
-        console.log(this.sessions);
-        
     }
 }
 </script>

@@ -5,13 +5,13 @@
         </div>
 
         <div class="search">
-            <input type="text" placeholder="账号">
+            <input type="text" placeholder="账号/邮箱">
             <br>
             <br>
-            <span>我的账号：cafebabe</span>
+            <span>我的账号：{{me.username}}</span>
         </div>
 
-        <div class="result">
+        <div class="result" v-show="flag">
             <div>
                 <img src="@/assets/logo.png" alt="">
             </div>
@@ -24,7 +24,13 @@
 
 <script>
 export default {
-    name: "AddContact"
+    name: "AddContact",
+    data(){
+        return {
+            me:this.$store.getters.getUser,
+            flag: false,
+        }
+    }
 }
 </script>
 

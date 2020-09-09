@@ -14,14 +14,34 @@
                         <td>{{contact.nickname}}</td>
                     </tr>
 
+                    <tr>
+                        <td>备注</td>
+                        <td>{{contact.remark}}</td>
+                    </tr>
+
+                    <tr>
+                        <td>age</td>
+                        <td>{{contact.age}}</td>
+                    </tr>
+                    <tr>
+                        <td>性别</td>
+                        <td>{{contact.nickname}}</td>
+                    </tr>
+
                      <tr>
-                        <td>账户</td>
-                        <td>{{contact.username}}</td>
+                        <td>电话</td>
+                        <td>{{contact.phone}}</td>
                     </tr>
 
                      <tr>
                         <td>邮箱</td>
                         <td>{{contact.email}}</td>
+                    </tr>
+
+
+                     <tr>
+                        <td>签名</td>
+                        <td>{{contact.signature}}</td>
                     </tr>
 
                 </table>
@@ -49,7 +69,7 @@ export default {
                 sessions = JSON.parse(sessions);
                 if(!sessions[this.contact.userId]){
                     sessions[this.contact.userId] = this.contact;
-                    sessionStorage.setItem("sessions",JSON.stringify(sessions))
+                    sessionStorage.setItem("sessions",JSON.stringify(sessions));
                 }
             }else{
                 sessions = {};
@@ -57,14 +77,9 @@ export default {
                 sessionStorage.setItem("sessions",JSON.stringify(sessions))
             }
             
-            console.log("123");
             this.$emit("func","Flow"); 
 
         }
-    },
-    created(){
-        //TODO
-
     }
 }
 </script>
