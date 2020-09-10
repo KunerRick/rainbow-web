@@ -3,7 +3,7 @@
         <div class="label">
             <span>{{receiver.remark}}</span>
         </div>
-        <div class="content" id="content">
+        <div class="content" ref="msgWarp">
             <!-- <div class="you">
                     <div class="time">
                     <span>10:30</span>
@@ -46,6 +46,7 @@
 </template>
 
 <script>
+
 export default {
     name:"Flow",
     data(){
@@ -71,8 +72,8 @@ export default {
     watch:{
       flow:function(){
           this.$nextTick(function(){
-              let content = document.getElementById("content");
-              content.scrollTo(0,content.scrollHeight);
+            //   let content = document.getElementById("content");
+              this.$refs.msgWarp.scrollTo(0,this.$refs.msgWarp.scrollHeight);
           });
        }
     },
@@ -94,12 +95,17 @@ export default {
             };
             this.$emit("send",message);
             this.msg = null;
-        }
+        },
+        
     },
     created(){
        this.receiver = this.$store.getters.getReceivert;
        this.user = this.$store.getters.getUser;
        this.userProperty = this.$store.getters.getUserPropery;
+
+    },
+    mounted(){
+        this.$refs.msgWarp.scrollTo(0,this.$refs.msgWarp.scrollHeight);
     },
     filters:{
         format:function(time){

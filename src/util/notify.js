@@ -2,7 +2,7 @@ import NotifyComponent from '../components/Notify.vue'
 
 const Notify = {};
 
-// 注册Toast
+// 注册
 
 Notify.install = function (Vue) {
     const NotifyConstructor = Vue.extend(NotifyComponent)

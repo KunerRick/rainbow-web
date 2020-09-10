@@ -115,11 +115,16 @@ export default {
                 let userId = this.$store.getters.getUser.userId;
                 let sub = '/user/'+userId+'/message';
                 this.stompClient.subscribe(sub, (msg) => { // 订阅服务端提供的某个topic
-                    this.$store.commit('setSession',JSON.parse(msg.body));
-                  
-                    
+                    let body = JSON.parse(msg.body)
+                    //当前消息的接收者是否是当前选择的接收这
+                    if(body.receiver == this.$store.getters.getReceivert.userId
+                    || body.sender == this.$store.getters.getReceivert.userId
+                    ){
+                        this.$store.commit('addMessage',body);
+                    }
+                    //save to database
+                    this.$db.add(body);
                 });
-
               
             }, (err) => {
                 // 连接发生错误时的处理函数
@@ -191,14 +196,15 @@ export default {
 
         //cid
         this.cid = localStorage.getItem("cid")
-
+        console.log(this.cid)
         this.userProperty = userProperty;
-        
-        
     },
     mounted(){
         this.initWebSocket();
     },
+    // beforeDestroy(){
+    //     this.$db.close();
+    // },
     
     components:{
         //right

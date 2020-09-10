@@ -16,8 +16,11 @@ export default new Vuex.Store({
       setContact(state,contact){
         state.contact = contact;
       },
-      setSession (state,message) {
-        state.session.push(message);
+      setSession (state,session) {
+        state.session = session;
+      },
+      addMessage(state,session) {
+        state.session.push(session);
       },
       setUser(state,user){
         state.user = user;
