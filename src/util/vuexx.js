@@ -6,6 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
       session:[],
+      contacts:[],
       user:null,
       userProperty:null,
       receiver:null,
@@ -13,6 +14,9 @@ export default new Vuex.Store({
       contact:null,
     },
     mutations: {
+      setContacts(state,contacts){
+        state.contacts = contacts;
+      },
       setContact(state,contact){
         state.contact = contact;
       },
@@ -36,6 +40,9 @@ export default new Vuex.Store({
       },
     },
     getters: {
+      getContacts: state => {
+        return state.contacts;
+      },
       getContact: state => {
         return state.contact;
       },

@@ -10,7 +10,7 @@
             <input type="text">
         </div>
         <div class="list">
-            <div v-for="(item, index) in contacts" :key="item.name" @click.stop="loadContactCom(index)">
+            <div v-for="(item, index) in $store.getters.getContacts" :key="item.name" @click.stop="loadContactCom(index)">
                 <div>
                     <div class="contactAvator">
                         <img :src="item.avatar">
@@ -34,7 +34,7 @@ export default {
     name:"Contacts",
      data(){
         return {
-            contacts:[]
+            // contacts:[]
         }
     },
     methods:{
@@ -43,22 +43,16 @@ export default {
         },
 
         loadContactCom(index){
-            this.$store.commit("setContact",this.contacts[index])
+            this.$store.commit("setContact",this.$store.getters.getContacts[index])
             this.$emit("func","Contact"); 
         }
     },
     created(){
-        HttpApi.get('/contact/v1/list', {
-                username: this.username,
-                passwd: this.passwd
-            })
+        HttpApi.get('/contact/v1/list')
             .then(response => {
                 const data = response.data;
-                if(data.code == 200){
-                    this.contacts = data.data;
-                }else{
-                     this.$notify(response.data.msg);
-                }
+                // this.contacts = data.data;
+                this.$store.commit("setContacts",data.data);
             })
             .catch(function (error) {
                 console.log(error);
