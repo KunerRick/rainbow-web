@@ -47,15 +47,16 @@
 import "@/assets/fonts/iconfont.css"
 
 // import right
-import AddContact from '@/components/right/AddContact'
-import Flow from '@/components/right/Flow'
-import Me from '@/components/right/Me'
-import Contact from '@/components/right/Contact'
+import AddContact from './right/AddContact'
+import Flow from './right/Flow'
+import Me from './right/Me'
+import Contact from './right/Contact'
+import NewContact from './right/NewContact'
 
 // import medium
-import Sessions from '@/components/medium/Sessions'
-import Contacts from '@/components/medium/Contacts'
-import Settings from '@/components/medium/Settings'
+import Sessions from './medium/Sessions'
+import Contacts from './medium/Contacts'
+import Settings from './medium/Settings'
 
 // import WS from '../util/ws.js'
 
@@ -215,6 +216,7 @@ export default {
         Settings,
         Me,
         Contact,
+        NewContact,
         
         //medium
         Sessions,

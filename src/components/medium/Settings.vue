@@ -7,17 +7,17 @@
         <div class="setting">
             <div @click.stop="loadMe">
                 <span>我的</span>
-                <i>></i>
+                <i class="iconfont icon-youjiantou"></i>
             </div>
 
             <div>
                 <span>安全</span>
-                <i>></i>
+                <i class="iconfont icon-youjiantou"></i>
             </div>
 
             <div>
                 <span>提醒</span>
-                <i>></i>
+                <i class="iconfont icon-youjiantou"></i>
             </div>
 
         </div>

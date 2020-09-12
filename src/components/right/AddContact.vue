@@ -5,31 +5,65 @@
         </div>
 
         <div class="search">
-            <input type="text" placeholder="账号/邮箱">
+            <input type="text" placeholder="账号/邮箱" 
+            @keydown.enter="search2"
+            @keyup.enter="search"
+            v-model="content">
             <br>
             <br>
-            <span>我的账号：{{me.username}}</span>
+            <span>我的账号：{{$store.getters.getUser.username}}</span>
         </div>
 
         <div class="result" v-show="flag">
             <div>
-                <img src="@/assets/logo.png" alt="">
+                    <img :src="user.avatar" alt="">
+                    <div>{{user.nickname}}</div>
             </div>
-            <div>
-                <span>蓝天白云</span>
-            </div>
+            <i class="iconfont icon-tianjia" @click.stop.prevent="addContact"></i>
         </div>
+
+
     </div>
 </template>
 
 <script>
+import HttpApi from '../../util/http'
+
 export default {
     name: "AddContact",
     data(){
         return {
-            me:this.$store.getters.getUser,
             flag: false,
+            content:null,
+            user:'',
         }
+    },
+    methods:{
+        search(){
+            if(!this.content){
+                return
+            }
+            HttpApi.get('/user/v1/search/'+this.content)
+            .then(response => {
+                let user = response.data.data;
+                if(user){
+                    this.user = user;
+                    this.flag = true;
+                }else{
+                    this.flag = false;
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        search2(event){
+            event.preventDefault();
+        },
+        addContact(){
+
+        }
+        
     }
 }
 </script>
@@ -63,20 +97,37 @@ export default {
     display: flex;
     display: -webkit-flex;
     padding: 10px 20px;
+    /* height: 60px; */
     background-color: white;
     margin-top: 10px;
+    align-items: center;
+    justify-content: space-between;
+    
 }
 
 .right .result img{
-    width: 35px;
-    height: 35px;
+    width: 40px;
+    height: 40px;
     border-radius: 35px;
 }
 
-.right .result div:nth-child(even){
-    line-height: 35px;
-    text-align: center;
-    margin-left: 10px;
+.right .result div > div{
+    height: 100%;
+    margin-left: 10px; 
+    margin-top: 8px;
+    float: right;
 }
+
+.right .result .iconfont{
+    font-size: 28px;
+    color: #333;
+}
+
+.right .result .iconfont:hover{
+    cursor: pointer;
+    color: #2C9984;
+}
+
+
 
 </style>

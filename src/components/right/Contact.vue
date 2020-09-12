@@ -92,6 +92,9 @@ export default {
         },
         editRemark2(){
             this.flag = true;
+            if(this.remark === this.contact.remark){
+                return;
+            }
             let contactId = this.$store.getters.getContact.userId;
             HttpApi.post('/contact/v1/remark',{
                 contactId: contactId,

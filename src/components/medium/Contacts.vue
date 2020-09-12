@@ -10,6 +10,28 @@
             <input type="text">
         </div>
         <div class="list">
+              <div class="newContact" @click.stop.prevent="newContact">
+                <div>
+                    <div class="contactAvator iconfont icon-icon-test1 ">
+                    </div>
+                    <div class="contactInfo">
+                        <div class="contactName">
+                            <span>新的朋友</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="group">
+                <div>
+                    <div class="contactAvator iconfont icon-icon-test ">
+                    </div>
+                    <div class="contactInfo">
+                        <div class="contactName">
+                            <span>群聊</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div v-for="(item, index) in $store.getters.getContacts" :key="item.name" @click.stop="loadContactCom(index)">
                 <div>
                     <div class="contactAvator">
@@ -45,6 +67,10 @@ export default {
         loadContactCom(index){
             this.$store.commit("setContact",this.$store.getters.getContacts[index])
             this.$emit("func","Contact"); 
+        },
+
+        newContact(){
+            this.$emit("func","NewContact"); 
         }
     },
     created(){
@@ -104,7 +130,6 @@ export default {
 
 }
 
-
 .list{
   width: 100%;
   height: 87%;
@@ -156,5 +181,12 @@ export default {
     flex-direction: column;
     align-items: flex-start;
 }
+.group{
+    margin-bottom: 20px;
+}
 
+.group .iconfont,.newContact .iconfont {
+    font-size: 35px;
+    color: #2C9984;
+}
 </style>>
