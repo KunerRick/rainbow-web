@@ -39,18 +39,9 @@ export default {
         }
     },
     methods:{
-        loadMessage(){
-            //TODO聊天消息应该加载双方且进行排序
-            this.$db.read(this.$store.getters.getUser.userId,
-                            this.$store.getters.getReceivert.userId,
-                            docs =>{
-                                this.$store.commit("setSession",docs);
-                                this.$emit("func","Flow"); 
-            });
-        },
         loadFlowCom(index){
             this.$store.commit("setReceiver",this.sessions[index]);
-            this.loadMessage()
+            this.$emit("func","Flow"); 
         }
     },
     created(){

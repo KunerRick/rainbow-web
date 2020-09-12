@@ -121,6 +121,7 @@ export default {
                     || body.sender == this.$store.getters.getReceivert.userId
                     ){
                         this.$store.commit('addMessage',body);
+                        
                     }
                     //save to database
                     this.$db.add(body);
@@ -175,6 +176,7 @@ export default {
         },
         rightCom(rightCom){
             this.incrementKey+=1;
+            //因为rightCom 值没变所以需要强制刷新界面
             this.rightComName = rightCom;
             
         }

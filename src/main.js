@@ -4,7 +4,7 @@ import router from './router'
 import Notify from './util/notify'
 // import Vuex from 'vuex'
 import store from './util/vuexx'
-import DB from './util/pouchdb'
+import DB from './util/store'
 
 
 Vue.use(Notify)

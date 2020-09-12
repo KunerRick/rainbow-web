@@ -52,11 +52,13 @@
 </template>
 
 <script>
+import HttpApi from '../../util/http'
+
 export default {
     name:"Contact",
     data(){
         return {
-            contact: this.$store.getters.getContact,
+            contact: "",
         }
     },
     methods:{
@@ -76,14 +78,20 @@ export default {
                 sessions[this.contact.userId] = this.contact;
                 sessionStorage.setItem("sessions",JSON.stringify(sessions))
             }
-            //TODO聊天消息应该加载双方且进行排序
-             this.$db.read(this.$store.getters.getUser.userId,
-                            this.$store.getters.getReceivert.userId,
-                            docs =>{
-                                this.$store.commit("setSession",docs);
-                                this.$emit("func","Flow"); 
-            });
+            this.$emit("func","Flow"); 
         }
+    },
+    created(){
+         HttpApi.post('/user/v1/contact/detail',{
+                userId:this.$store.getters.getUser.userId,
+                contactId:this.$store.getters.getContact.userId
+            })
+            .then(response =>{
+                this.contact = response.data.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 }
 </script>

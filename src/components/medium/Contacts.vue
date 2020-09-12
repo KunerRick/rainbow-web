@@ -43,20 +43,8 @@ export default {
         },
 
         loadContactCom(index){
-            HttpApi.post('/user/v1/contact/detail',{
-                userId:this.$store.getters.getUser.userId,
-                contactId:this.contacts[index].userId
-            })
-            .then(response =>{
-                let contact = response.data.data;
-                this.$store.commit("setContact",contact)
-                this.$emit("func","Contact"); 
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-           
-            
+            this.$store.commit("setContact",this.contacts[index])
+            this.$emit("func","Contact"); 
         }
     },
     created(){

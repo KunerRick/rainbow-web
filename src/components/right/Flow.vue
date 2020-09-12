@@ -24,7 +24,7 @@
                 </div>
             </div> -->
 
-             <div :class="item.sender === receiver.userId?'you':'me'" v-for="(item,index) in flow" :key="index">
+             <div :class="item.sender === receiver.userId?'you':'me'" v-for="(item,index) in $store.getters.getSession" :key="index">
                 <div class="time">
                     <span>{{item.date | format}}</span>
                 </div>
@@ -54,26 +54,14 @@ export default {
             msg : null,
             user: null,
             userProperty:null,
-            // flow:[
-            //     {
-            //         "id":"5f54dfed5e0a838c0b823ca7",
-            //         "msgType":1,
-            //         "content":"123",
-            //         "sender":"5f5364955e0a5556c440ecfd",
-            //         "receiver":"5f5364955e423c440ecfd",
-            //         "status":0,
-            //         "date":1599397869182
-            //     }
-            // ],
-            flow:this.$store.getters.getSession,
             receiver:null,
+            // flow:this.$store.getters.getSession,
         }
     },
     watch:{
-      flow:function(){
+      '$store.getters.getSession':function(){
           this.$nextTick(function(){
-            //   let content = document.getElementById("content");
-              this.$refs.msgWarp.scrollTo(0,this.$refs.msgWarp.scrollHeight);
+            this.$refs.msgWarp.scrollTo(0,this.$refs.msgWarp.scrollHeight);
           });
        }
     },
@@ -96,13 +84,23 @@ export default {
             this.$emit("send",message);
             this.msg = null;
         },
-        
+        loadMessage(){
+            //TODO聊天消息应该加载双方且进行排序
+            this.$db.read(this.$store.getters.getUser.userId,
+                            this.$store.getters.getReceivert.userId,
+                            docs =>{
+                                this.$store.commit("setSession",docs);
+                                
+                                
+            });
+        },
     },
     created(){
-       this.receiver = this.$store.getters.getReceivert;
-       this.user = this.$store.getters.getUser;
-       this.userProperty = this.$store.getters.getUserPropery;
+        this.receiver = this.$store.getters.getReceivert;
+        this.user = this.$store.getters.getUser;
+        this.userProperty = this.$store.getters.getUserPropery;
 
+        this.loadMessage();
     },
     mounted(){
         this.$refs.msgWarp.scrollTo(0,this.$refs.msgWarp.scrollHeight);
