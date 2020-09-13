@@ -190,9 +190,9 @@ export default {
     justify-content: flex-end;
 } 
 
-.content .me .bubble div{
+.content .me > .bubble div{
     max-width: 60%;
-    margin: 5px 0 0 5px;
+    margin: 5px 5px 0 0;
     background-color: #fff;
     word-wrap:break-word;  
     word-break:break-all;  

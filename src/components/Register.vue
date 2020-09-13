@@ -61,11 +61,11 @@ export default {
                 email:this.email
             })
             .then(response => {
-                if(response.data.code === 200){
+                if(response.code === 200){
                     this.$notify("注册成功");
                     this.$router.push({path:"/login"})
                 }else{
-                     this.$notify(response.data.msg);
+                     this.$notify(response.msg);
                 }
             })
             .catch(function (error) {
@@ -77,10 +77,10 @@ export default {
                 email: this.email
             })
             .then(response => {
-                if(response.data.code === 200){
+                if(response.code === 200){
                     this.$notify("验证码已发送");
                 }else{
-                     this.$notify(response.data.msg);
+                     this.$notify(response.msg);
                 }
             })
             .catch(error=> {

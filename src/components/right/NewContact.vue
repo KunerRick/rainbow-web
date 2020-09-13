@@ -4,23 +4,28 @@
             <span>新的朋友</span>
         </div>
 
-        <div class="result" v-for="item in msg" :key="item.id">
+        <div class="result" v-for="(item,index) in msg" :key="item.id">
             <div>
                 <img :src="item.content.avatar" alt="">
                 <div>{{item.content.nickname}}</div>
             </div>
-            <div>
+            <div v-if="item.content.status === 0">
                 <i :class="['iconfont', reject?'icon-guanbi':'icon-cuowutishitianchong']" 
-                    @click.stop.prevent="addContact"
+                    @click.stop.prevent="handle(index,2)"
                     @mouseover="mouseOver1"
                     @mouseleave="mouseLeave1"></i>
                 &nbsp;
                 <i :class="['iconfont',accpet?'icon-zhengquetishi':'icon-zhengquetishitianchong']"
                    @mouseover="mouseOver2"
                     @mouseleave="mouseLeave2"
-                 @click.stop.prevent="addContact"></i>
+                 @click.stop.prevent="handle(index,1)"></i>
             </div>
-            
+            <div v-if="item.content.status === 1">
+                已同意
+            </div>
+            <div v-if="item.content.status === 2">
+                已拒绝
+            </div>
         </div>
 
 
@@ -37,6 +42,7 @@ export default {
             msg:'',
             reject:true,
             accpet:true,
+            flag:true,
         }
     },
     methods:{
@@ -51,7 +57,21 @@ export default {
         },
          mouseLeave2(){
             this.accpet = !this.accpet;
-        }
+        },
+        handle(index,h){
+            HttpApi.post("/contact/v1/handle/request",
+                {
+                    sender:this.msg[index].sender,
+                    handle:h     
+                }
+            ).then(response => {
+                if(response.code != 200){
+                    this.$notify(response.msg);
+                }
+            }).catch(error => {
+                console.log(error);
+            })
+        },
         
     },
     created(){

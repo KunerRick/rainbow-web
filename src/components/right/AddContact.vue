@@ -62,22 +62,32 @@ export default {
         },
         addContact(){
             let contactId = this.user.userId;
+            let userProperty = this.$store.getters.getUserPropery;
+            let user = this.$store.getters.getUser;
             let addContactContent = {
-                avatar:this.user.avaatar,
+                avatar:userProperty.avatar,
                 note:"跪求好友位",
-                nickname: this.user.nickname,
-                username:this.user.username
+                nickname: userProperty.nickname,
+                username: user.username,
+                receiverNickname: this.user.nickname,
             };
             let message = {
-                id:null,
                 msgType:10,
                 content: addContactContent ,
-                sender: this.$store.getters.getUser.userId,
                 receiver: contactId,
                 status:0,
                 date:new Date().getTime()
             };
-            this.$emit("send",message);
+            HttpApi.put("/contact/v1/add/request",message)
+            .then(response => {
+                if(response.code == 200){
+                    this.$notify("验证消息已发送");
+                }else{
+                    this.$notify(response.msg);
+                }
+            }).catch(error => {
+                console.log(error)
+            })
         }
         
     }
