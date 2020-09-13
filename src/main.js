@@ -6,9 +6,12 @@ import Notify from './util/notify'
 import store from './util/vuexx'
 import DB from './util/store'
 
+import WS from './util/ws'
+
 
 Vue.use(Notify)
 Vue.use(DB)
+Vue.use(WS)
 
 Vue.config.productionTip = false
 

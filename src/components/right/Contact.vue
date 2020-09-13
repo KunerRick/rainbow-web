@@ -99,10 +99,9 @@ export default {
             HttpApi.post('/contact/v1/remark',{
                 contactId: contactId,
                 remark:this.remark
-
             })
             .then(response =>{
-                if(response.data.code == 200){
+                if(response.code == 200){
                     //修改当前联系人面板信息
                     this.contact.remark = this.remark;
                     //修改联系人列表信息
@@ -125,8 +124,8 @@ export default {
                 contactId:this.$store.getters.getContact.userId
             })
             .then(response =>{
-                this.contact = response.data.data;
-                this.remark = response.data.data.remark;
+                this.contact = response.data;
+                this.remark = response.data.remark;
             })
             .catch(function (error) {
                 console.log(error);

@@ -37,9 +37,8 @@ export default {
                 passwd: this.passwd
             })
             .then(response => {
-                const data = response.data;
-                if(data.code == 200){
-                    const token = data.data;
+                if(response.code == 200){
+                    const token = response.data;
                     let parts = token.split(".");
 					if (parts.length == 2 && token.endsWith(".")) {
                         parts = [parts[0],parts[1],""];
@@ -55,8 +54,6 @@ export default {
                      this.$store.commit('setToken',token);
                     sessionStorage.setItem("token",token);
 
-                    HttpApi.defaults.headers.common['Authorization'] = "berarer " + token;
-
                     //get user property
                     return HttpApi.get('/user/v1/property');
                        
@@ -66,16 +63,15 @@ export default {
                 }
             })
             .then(response => { // 
-                const data = response.data;
-                if(data.code == 200){
-                    let curUserProperty = data.data;
+                if(response.code == 200){
+                    let curUserProperty = response.data;
                     //cache user property 
                     sessionStorage.setItem("userProperty",JSON.stringify(curUserProperty));
                     //cache user property to vuex
                     this.$store.commit('setUserProperty',curUserProperty);
                     this.$router.replace({path:"/chat"});
                 }else{
-                        this.$notify(response.data.msg);
+                    this.$notify(response.data.msg);
                 }
             })
             .catch(function (error) {

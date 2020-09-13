@@ -57,7 +57,7 @@ export default {
     created(){
         HttpApi.get('/contact/v1/add/request/list')
             .then(response => {
-                this.msg = response.data.data;
+                this.msg = response.data;
             })
             .catch(function (error) {
                 console.log(error);

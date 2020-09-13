@@ -76,9 +76,14 @@ export default {
     created(){
         HttpApi.get('/contact/v1/list')
             .then(response => {
-                const data = response.data;
-                // this.contacts = data.data;
-                this.$store.commit("setContacts",data.data);
+                if(response.code === 200){
+                    const data = response.data;
+                    this.contacts = data;
+                    this.$store.commit("setContacts",data);
+                }else{
+                    this.$notify(response.data.msg);
+                }
+               
             })
             .catch(function (error) {
                 console.log(error);

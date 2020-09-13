@@ -32,7 +32,6 @@
                             mode="out-in">
                     <component :is="rightComName" 
                                 style="animation-duration: .2s" 
-                                @send="doMessage"
                                 @func="rightCom"
                                 :key='incrementKey'></component>
                 </transition>
@@ -58,13 +57,6 @@ import Sessions from './medium/Sessions'
 import Contacts from './medium/Contacts'
 import Settings from './medium/Settings'
 
-// import WS from '../util/ws.js'
-
-import SockJS from  'sockjs-client';
-import  Stomp from 'stompjs';
-
-import HttpApi from '../util/http'
-
 
 export default {
     name:"Chat",
@@ -81,77 +73,40 @@ export default {
             timer:'',
             userProperty:null,
 
-            cid:null,
-
             incrementKey:0,
 
         }
     },
     methods:{
-        initWebSocket() {
-            this.connection();
-            // let that= this;
-            // 断开重连机制,尝试发送消息,捕获异常发生时重连
-            // this.timer = setInterval(() => {
-            //     try {
-            //         that.stompClient.send("test");
-            //     } catch (err) {
-            //         console.log("断线了: " + err);
-            //         that.connection();
-            //     }
-            // }, 5000);
-        },
+      
         connection() {
-
-             let token = this.$store.getters.getToken;
-
-            // 建立连接对象
-            let socket = new SockJS('/ws/rainbow-ws?sid='+token+"&cid="+this.cid);
-            // 获取STOMP子协议的客户端对象
-            this.stompClient = Stomp.over(socket);
-            // 定义客户端的认证信息,按需求配置
-            // this.stompClient.debug = null;
-            // 向服务器发起websocket连接
-            this.stompClient.connect({server:"Apache/1.3.9"},() => {
-                let userId = this.$store.getters.getUser.userId;
-                let sub = '/user/'+userId+'/message';
-                this.stompClient.subscribe(sub, (msg) => { // 订阅服务端提供的某个topic
-                    let body = JSON.parse(msg.body)
+            this.$ws.connection(
+                this.$store.getters.getUser,
+                this.$store.getters.getToken,
+                body => {
                     //当前消息的接收者是否是当前选择的接收这
                     if(body.receiver == this.$store.getters.getReceivert.userId
                     || body.sender == this.$store.getters.getReceivert.userId
                     ){
                         this.$store.commit('addMessage',body);
                         
+                    }else{
+                        this.$notify("新消息");
                     }
                     //save to database
                     this.$db.add(body);
-                });
-              
-            }, (err) => {
-                // 连接发生错误时的处理函数
-                console.log('失败');
-                console.log(err);
-            });
-        },    //连接 后台
-        disconnect() {
-            if (this.stompClient) {
-                this.stompClient.disconnect();
-            }
-        },  // 断开连接
-
-        doMessage(msg){
-            this.stompClient.send("/app/message",
-            // headers,
-            {}, 
-
-            JSON.stringify(msg)
-            );
-        },
+                },err =>{
+                    setTimeout(() => {
+                        console.log("re connection")
+                        this.connection();
+                        console.log(err);
+                    },5000)
+                    
+                })
+        }, 
         beforeDestroy: function () {
-            // 页面离开时断开连接,清除定时器
-            this.disconnect();
-        // clearInterval(this.timer);
+            console.log("close connection")
+            this.$ws.disConnection();
         },
        
         loadChats(){
@@ -183,9 +138,13 @@ export default {
         }
     },
     created(){
+
+        //connection with webscoket
+       
+
         //get user from session storage
         let userJson = sessionStorage.getItem("user");
-        this.$store.commit("setUser",JSON.parse(userJson));
+        this.$store.commit("setUser", JSON.parse(userJson));
 
         //get user property from session storage
         let userPropertyJson = sessionStorage.getItem("userProperty");
@@ -195,18 +154,15 @@ export default {
             //local storage
         let token = sessionStorage.getItem("token");
         this.$store.commit("setToken",token);
-        HttpApi.defaults.headers.common['Authorization'] = "berarer " + token;
+        // HttpApi.defaults.headers.common['Authorization'] = "berarer " + token;
 
-        //cid
-        this.cid = localStorage.getItem("cid")
-        console.log(this.cid)
         this.userProperty = userProperty;
+
+        this.connection();
     },
-    mounted(){
-        this.initWebSocket();
-    },
+  
     // beforeDestroy(){
-    //     this.$db.close();
+    //     this.$ws.disConnection();
     // },
     
     components:{

@@ -81,7 +81,7 @@ export default {
                 status:0,
                 date:new Date().getTime()
             };
-            this.$emit("send",message);
+            this.$ws.send(message);
             this.msg = null;
         },
         loadMessage(){

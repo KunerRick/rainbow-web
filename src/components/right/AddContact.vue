@@ -45,7 +45,7 @@ export default {
             }
             HttpApi.get('/user/v1/search/'+this.content)
             .then(response => {
-                let user = response.data.data;
+                let user = response.data;
                 if(user){
                     this.user = user;
                     this.flag = true;
@@ -61,7 +61,23 @@ export default {
             event.preventDefault();
         },
         addContact(){
-
+            let contactId = this.user.userId;
+            let addContactContent = {
+                avatar:this.user.avaatar,
+                note:"跪求好友位",
+                nickname: this.user.nickname,
+                username:this.user.username
+            };
+            let message = {
+                id:null,
+                msgType:10,
+                content: addContactContent ,
+                sender: this.$store.getters.getUser.userId,
+                receiver: contactId,
+                status:0,
+                date:new Date().getTime()
+            };
+            this.$emit("send",message);
         }
         
     }
