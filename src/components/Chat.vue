@@ -80,21 +80,25 @@ export default {
     methods:{
       
         connection() {
+            this.$ws.disConnection();
             this.$ws.connection(
                 this.$store.getters.getUser,
                 this.$store.getters.getToken,
                 body => {
+                    let curReceiver = this.$store.getters.getReceivert
                     //当前消息的接收者是否是当前选择的接收这
-                    if(body.receiver == this.$store.getters.getReceivert.userId
-                    || body.sender == this.$store.getters.getReceivert.userId
-                    ){
-                        this.$store.commit('addMessage',body);
-                        
+                    if(curReceiver){
+                        if(body.receiver == curReceiver.userId || body.sender == curReceiver.userId){
+                            this.$store.commit('addMessage',body);
+                        }else{
+                            this.$notify("新消息");
+                        }
+                         this.$db.add(body);
                     }else{
                         this.$notify("新消息");
                     }
                     //save to database
-                    this.$db.add(body);
+                   
                 },err =>{
                     setTimeout(() => {
                         console.log("re connection")
@@ -104,11 +108,6 @@ export default {
                     
                 })
         }, 
-        beforeDestroy: function () {
-            console.log("close connection")
-            this.$ws.disConnection();
-        },
-       
         loadChats(){
             this.duihua = false;
             this.yonghu = this.bangzhu = this.shezhi = true; 
@@ -161,9 +160,9 @@ export default {
         this.connection();
     },
   
-    // beforeDestroy(){
-    //     this.$ws.disConnection();
-    // },
+    beforeDestroy(){
+        this.$ws.disConnection();
+    },
     
     components:{
         //right

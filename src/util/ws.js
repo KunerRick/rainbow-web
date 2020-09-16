@@ -1,27 +1,29 @@
 import SockJS from  'sockjs-client';
 import Stomp from 'stompjs';
 
-let WS = {};
+let WS = {
+    stompClient:null,
+};
 WS.install = function(Vue){
        
     Vue.prototype.$ws = {
-        stompClient:null,
+        
         connection: (user,token,SUCCESS,ERROR)=> {
             // 建立连接对象
-
+            
             let cid =  localStorage.getItem("cid");
            
             let socket = new SockJS('/ws/rainbow-ws?sid='+token+"&cid="+cid);
             // 获取STOMP子协议的客户端对象
-            this.stompClient = Stomp.over(socket);
+            WS.stompClient = Stomp.over(socket);
             // 定义客户端的认证信息,按需求配置
             // this.stompClient.debug = null;
             // 向服务器发起websocket连接
-            this.stompClient.connect({server:"Apache/1.3.9"},() => {
+            WS.stompClient.connect({server:"Apache/1.3.9"},() => {
 
                 let userId = user.userId;
                 let sub = '/user/'+userId+'/message';
-                this.stompClient.subscribe(sub, (msg) => { // 订阅服务端提供的某个topic
+                WS.stompClient.subscribe(sub, (msg) => { // 订阅服务端提供的某个topic
                     let body = JSON.parse(msg.body)
                     SUCCESS(body);
                 });
@@ -32,12 +34,12 @@ WS.install = function(Vue){
             });
         },
         disConnection: () => {
-            if (this.stompClient) {
-                this.stompClient.disconnect();
+            if (WS.stompClient) {
+                WS.stompClient.disconnect();
             }
         },
         send: (msg) => {
-            this.stompClient.send("/app/message",
+            WS.stompClient.send("/app/message",
             // headers,
             {}, 
 

@@ -30,10 +30,10 @@
                 </div>
                 <div class="bubble" v-if="item.sender == receiver.userId">
                      <img v-bind:src="receiver.avatar" alt="">
-                    <div>{{item.content}}</div>
+                    <div>{{item.content.txt}}</div>
                 </div>
                 <div class="bubble" v-else>
-                    <div>{{item.content}}</div>
+                    <div>{{item.content.txt}}</div>
                     <img :src="userProperty.avatar" alt="">
                 </div>
             </div>
@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import HttpApi  from '../../util/http'
 
 export default {
     name:"Flow",
@@ -71,17 +72,25 @@ export default {
 
         },
         send(){
-            let userId = this.user.userId;
             let message = {
-                id:null,
                 msgType:1,
-                content: this.msg,
-                sender: userId,
+                content: {
+                    txt: this.msg
+                },
                 receiver:this.receiver.userId,
-                status:0,
-                date:new Date().getTime()
             };
-            this.$ws.send(message);
+            // this.$ws.send(message);
+            HttpApi.put("/message/v1/sending",message)
+            .then(resp => {
+                if(resp.code == 200){
+                    this.$store.commit('addMessage',resp.data);
+                    this.$db.add(resp.data);
+                }
+               
+            }).catch(err => {
+                console.log(err);
+            })
+
             this.msg = null;
         },
         loadMessage(){

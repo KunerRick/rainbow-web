@@ -59,7 +59,7 @@ export default {
                        
                     
                 }else{
-                     this.$notify(response.data.msg);
+                     this.$notify(response.msg);
                 }
             })
             .then(response => { // 
@@ -79,7 +79,7 @@ export default {
             });
 
        }
-    }
+    },
 
 }
 </script>
