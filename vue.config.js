@@ -16,6 +16,14 @@ module.exports = {
             pathRewrite:{
                 '^/ws':''
             }
+          },
+          '/group1': {
+            target: 'http://192.168.1.118',
+            ws: true,
+            changeOrigin: true,
+            pathRewrite:{
+                '^/group1':'/group1'
+            }
           }
         }
     }

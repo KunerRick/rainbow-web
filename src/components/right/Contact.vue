@@ -30,7 +30,7 @@
                     </tr>
                     <tr>
                         <td>性别</td>
-                        <td>{{contact.nickname}}</td>
+                        <td>{{contact.gender | gender}}</td>
                     </tr>
 
                      <tr>
@@ -66,6 +66,17 @@ export default {
             contact: "",
             flag:true,
             remark:null,
+        }
+    },
+    filters:{
+        gender(val){
+            if(val == 1){
+                return "男";
+            }else if(val == 0){
+                return "女";
+            }else{
+                return "保密";
+            }
         }
     },
     methods:{

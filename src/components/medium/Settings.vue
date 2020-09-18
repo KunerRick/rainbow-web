@@ -10,15 +10,15 @@
                 <i class="iconfont icon-youjiantou"></i>
             </div>
 
-            <div>
+             <div>
                 <span>安全</span>
                 <i class="iconfont icon-youjiantou"></i>
             </div>
-
+<!--
             <div>
                 <span>提醒</span>
                 <i class="iconfont icon-youjiantou"></i>
-            </div>
+            </div> -->
 
         </div>
         <div class="exit" @click.stop="exit">

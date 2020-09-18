@@ -3,8 +3,7 @@
         <div class="label">
             <span>聊天</span>
         </div>
-        <div class="search">
-            <input type="text">
+        <div class="blank">
         </div>
         <div class="list">
             <div v-for="(item,index) in sessions" :key="item.name">
@@ -77,23 +76,10 @@ export default {
     font-size: 20px;
 }
 
-.medium .search{
-    height: 10%;
-    min-height: 70px;
+.medium .blank{
+    min-height: 20px;
 
 }
-
-.medium .search input{
-    margin-top: 10%;
-    width: 85%;
-    height: 30px;
-    background-color: #333;
-    border: 0;
-    border-radius: 5px;
-    padding-left: 10px;
-    color: white;
-}
-
 
 .list{
   width: 100%;

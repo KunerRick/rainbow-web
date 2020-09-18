@@ -7,7 +7,7 @@
             </div>
         </div>
         <div class="search">
-            <input type="text">
+            <input type="text" @keyup.enter="search" v-model="searchContent">
         </div>
         <div class="list">
               <div class="newContact" @click.stop.prevent="newContact">
@@ -32,7 +32,7 @@
                     </div>
                 </div>
             </div>
-            <div v-for="(item, index) in $store.getters.getContacts" :key="item.name" @click.stop="loadContactCom(index)">
+            <div v-for="(item, index) in contacts" :key="item.name" @click.stop="loadContactCom(index)">
                 <div>
                     <div class="contactAvator">
                         <img :src="item.avatar">
@@ -56,7 +56,8 @@ export default {
     name:"Contacts",
      data(){
         return {
-            // contacts:[]
+            contacts:null,
+            searchContent:null,
         }
     },
     methods:{
@@ -65,12 +66,27 @@ export default {
         },
 
         loadContactCom(index){
-            this.$store.commit("setContact",this.$store.getters.getContacts[index])
+            this.$store.commit("setContact",this.contacts[index])
             this.$emit("func","Contact"); 
         },
 
         newContact(){
             this.$emit("func","NewContact"); 
+        },
+        search(){
+            if(!this.searchContent){
+                this.contacts = this.$store.getters.getContacts;
+                return;
+            }
+            let contacts = this.$store.getters.getContacts;
+            let result = [];
+            contacts.forEach(element => {
+                let reg = new RegExp(this.searchContent.trim());
+                if(element.remark.match(reg)){
+                    result.push(element);
+                }
+            });
+            this.contacts = result;
         }
     },
     created(){
@@ -81,7 +97,7 @@ export default {
                     this.contacts = data;
                     this.$store.commit("setContacts",data);
                 }else{
-                    this.$notify(response.data.msg);
+                    this.$notify(response.msg);
                 }
                
             })
