@@ -81,7 +81,12 @@ export default {
             HttpApi.put("/contact/v1/add/request",message)
             .then(response => {
                 if(response.code == 200){
-                    this.$notify("验证消息已发送");
+                    if(response.data){
+                        this.$store.getters.getContacts.push(response.data)
+                    }else{
+                        this.$notify("验证消息已发送");
+                    }
+                    
                 }else{
                     this.$notify(response.msg);
                 }

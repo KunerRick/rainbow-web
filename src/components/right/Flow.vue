@@ -3,7 +3,7 @@
         <div class="label">
             <span>{{receiver.remark}}</span>
         </div>
-        <div class="content" ref="msgWarp">
+        <div class="content" ref="msgWarp" @click="cancelEmojiPicker">
             <!-- <div class="you">
                     <div class="time">
                     <span>10:30</span>
@@ -39,8 +39,24 @@
             </div>
 
         </div>
-        <div class="typing">
-            <textarea placeholder="enter to send" v-model="msg" @keydown.enter="send2" @keyup.enter="send"></textarea>
+        <div class="typing" >
+
+
+            <Picker set="emojione" v-if='emojiDisplay'
+             @select="addEmoji" 
+             :title="title" emoji="point_up"
+             :style="{ position: 'absolute', bottom: '70px', left: '0px' }"
+             :i18n="i18n"
+             :native="true" 
+             :sheetSize="20"
+             :include="include"/>
+             <div class="toolbar">
+                 <input type="button" value="😀" @click="showEmojiPicker">
+                 <input type="button" value="🖼️" @click="sendPic">
+             </div>
+            
+            <textarea ref="inputMsg" placeholder="enter to send" v-model="msg" @keydown.enter="send2" @keyup.enter="send"></textarea>
+
         </div>
     </div>
 </template>
@@ -48,16 +64,40 @@
 <script>
 import HttpApi  from '../../util/http'
 
+import { Picker } from 'emoji-mart-vue'
+
 export default {
     name:"Flow",
     data(){
         return {
-            msg : null,
-            user: null,
+            msg : '',
+            // user: null,
             userProperty:null,
             receiver:null,
+            typing:null,
             // flow:this.$store.getters.getSession,
+            emojiDisplay:false,
+            include:['people','nature','foods','symbols'],
+            i18n:{ search: '搜索',
+                    notfound: '没找到emoji',
+                    categories: {
+                    search: '搜索结果',
+                    recent: '常用',
+                    people: '笑脸',
+                    nature: '自然',
+                    foods: '食物',
+                    activity: '活动',
+                    places: '地点',
+                    objects: '对象',
+                    symbols: '符号',
+                    flags: '旗子',
+                    // custom: 'Custom',
+                    } },
+            title:"选择emoji"
         }
+    },
+    components:{
+        Picker
     },
     watch:{
       '$store.getters.getSession':function(){
@@ -66,12 +106,29 @@ export default {
           });
        }
     },
+ 
     methods:{
+        cancelEmojiPicker(){
+            this.emojiDisplay = false;
+        },
+        sendPic(){
+
+        },
+        showEmojiPicker(){
+          this.emojiDisplay = !this.emojiDisplay;  
+        },
+        addEmoji(emoji){
+            this.msg = this.msg + emoji.native;
+            this.emojiDisplay = false;
+            this.$refs.inputMsg.focus();
+        },
+   
         send2(event){
             event.preventDefault();
 
         },
         send(){
+
             let message = {
                 msgType:1,
                 content: {
@@ -79,7 +136,6 @@ export default {
                 },
                 receiver:this.receiver.userId,
             };
-            // this.$ws.send(message);
             HttpApi.put("/message/v1/sending",message)
             .then(resp => {
                 if(resp.code == 200){
@@ -90,8 +146,8 @@ export default {
             }).catch(err => {
                 console.log(err);
             })
+            this.msg = '';
 
-            this.msg = null;
         },
         loadMessage(){
             //TODO聊天消息应该加载双方且进行排序
@@ -103,6 +159,7 @@ export default {
                                 
             });
         },
+      
     },
     created(){
         this.receiver = this.$store.getters.getReceivert;
@@ -113,6 +170,7 @@ export default {
     },
     mounted(){
         this.$refs.msgWarp.scrollTo(0,this.$refs.msgWarp.scrollHeight);
+         this.$refs.inputMsg.focus();
     },
     filters:{
         format:function(time){
@@ -173,7 +231,8 @@ export default {
     min-height: 70px; 
     max-height: 70px;
     width: 100%;
-    border-top: 1px solid #b2b2b2;
+    /* border-top: 1px solid #b2b2b2; */
+    position: relative;
     bottom: 0px;
 }
 
@@ -184,7 +243,8 @@ export default {
     height: 100%;
     resize: none;
     padding: 5px;
-    
+    font-size: 16px;
+    outline: none;
 }
 
 .content > div{
@@ -239,5 +299,26 @@ export default {
     width: 35px;
     height: 35px;
     border-radius: 35px;
+}
+
+.toolbar {
+    border-top: 1px solid #b2b2b2;
+    border-bottom: 1px solid #b2b2b2;
+    width: 100%;
+    height: 30px;
+}
+
+.toolbar input{
+    height: 30px;
+    background-color: rgba(0, 0, 0, 0);
+    width: 30px;
+    margin-left: 10px;
+    font-size: 20px;
+    border: 0px;
+    outline: none;
+}
+
+.toolbar input:hover{
+     transform: scale(1.1);
 }
 </style>

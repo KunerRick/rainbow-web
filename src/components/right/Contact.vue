@@ -51,6 +51,7 @@
 
                 </table>
                 <input class="sendBtn" type="button" value="发送消息" @click.stop="sendTo">
+                <input class="deleteBtn" type="button" value="删除好友" @click.stop="deleteContact">
             </div>
         </div>
     </div>
@@ -80,6 +81,29 @@ export default {
         }
     },
     methods:{
+        deleteContact(){
+           
+
+            HttpApi.delete("/contact/v1/del/"+this.contact.userId)
+            .then(resp => {
+                if(resp.code == 200){
+                    let contacts = this.$store.getters.getContacts;
+                    console.log(contacts);
+                    for(let ele of contacts){
+                        if(this.contact.userId === ele.userId){
+                            contacts.pop(ele);
+                            break;
+                        }
+                    }
+                    this.$emit("func",""); 
+                }else{
+                    this.$notify(resp.msg);
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
         sendTo(){
             //set current receiver
             this.$store.commit("setReceiver",this.contact);
@@ -199,6 +223,7 @@ export default {
     background-color: #333;
     color: white;
     border-radius: 5px;
+    cursor: pointer;
 }
 
 .info .infoDetails table td a{
@@ -211,4 +236,17 @@ export default {
     cursor: pointer;
 }
 
+
+.info .infoDetails .deleteBtn{
+    width: 100px;
+    height: 40px;
+    font-size: 14px;
+    margin: 30px 0;
+    border: 0;
+    background-color: red;
+    color: white;
+    border-radius: 5px;
+    float: right;
+    cursor: pointer;
+}
 </style>>
