@@ -43,16 +43,15 @@
                         <td>{{contact.email}}</td>
                     </tr>
 
-
                      <tr>
                         <td>签名</td>
                         <td>{{contact.signature}}</td>
                     </tr>
 
                 </table>
-                <input class="sendBtn" type="button" value="发送消息" @click.stop="sendTo">
-                <input class="deleteBtn" type="button" value="删除好友" @click.stop="deleteContact">
             </div>
+            <input class="sendBtn" type="button" value="发送消息" @click.stop="sendTo">
+            <input class="deleteBtn" type="button" value="删除好友" @click.stop="deleteContact">
         </div>
     </div>
 </template>
@@ -221,47 +220,32 @@ export default {
     width: 80%;
     height: 50%;
     margin: 30px auto;
-    display: flex;
-    display: -webkit-flex;
 }
 
 .avator{
-    /* background-color: lightgreen; */
     width: 60px;
     height: 60px;
     border-radius: 60px;
     position: relative;
     overflow: hidden;
-
+    float: left;
 } 
-
 
 .info .avator img{
     width: 60px;
     height: 60px;
     border-radius: 60px;
-    /* border: 1px solid #b2b2b2; */
 }
 .info .infoDetails{
     margin: 0 20px ;
-    /* background-color: lightcyan; */
+    margin-left: 80px;
+    
 }
 
 .info .infoDetails table td{
-    /* border-bottom: 1px solid #b2b2b2; */
     padding: 5px 10px;
 }
-.info .infoDetails .sendBtn{
-    width: 100px;
-    height: 40px;
-    font-size: 14px;
-    margin: 30px 0;
-    border: 0;
-    background-color: #333;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-}
+
 
 .info .infoDetails table td a{
     font-size: 10px;
@@ -273,8 +257,20 @@ export default {
     cursor: pointer;
 }
 
+.info .sendBtn{
+    width: 100px;
+    height: 40px;
+    font-size: 14px;
+    margin: 30px 0;
+    border: 0;
+    background-color: #333;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 80px;
+}
 
-.info .infoDetails .deleteBtn{
+.info .deleteBtn{
     width: 100px;
     height: 40px;
     font-size: 14px;
@@ -283,7 +279,8 @@ export default {
     background-color: red;
     color: white;
     border-radius: 5px;
-    float: right;
+    /* float: right; */
     cursor: pointer;
+    margin-left: 50px;
 }
 </style>>
