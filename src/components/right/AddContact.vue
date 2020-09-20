@@ -61,20 +61,31 @@ export default {
             event.preventDefault();
         },
         addContact(){
-            let contactId = this.user.userId;
+            let searchUser = this.user;
             let userProperty = this.$store.getters.getUserPropery;
             let user = this.$store.getters.getUser;
-            let addContactContent = {
+            let senderContactBrief = {
                 avatar:userProperty.avatar,
-                note:"跪求好友位",
                 nickname: userProperty.nickname,
                 username: user.username,
-                receiverNickname: this.user.nickname,
             };
+
+            let receiverContactBrief = {
+                avatar:searchUser.avatar,
+                nickname: searchUser.nickname,
+                username: searchUser.username,
+            };
+
+            let addContactContent = {
+                sender:senderContactBrief,
+                receiver:receiverContactBrief,
+                note:"..."
+            };
+
             let message = {
                 msgType:10,
                 content: addContactContent ,
-                receiver: contactId,
+                receiver: searchUser.userId,
                 status:0,
                 date:new Date().getTime()
             };

@@ -7,12 +7,16 @@
                         <span :class="['iconfont',duihua?'icon-duihuaxinxi':'icon-duihuaxinxitianchong']"></span>
                     </div>
                     <div @click.stop="loadContacts">
-                        <span :class="['iconfont', yonghu?'icon-yonghu':'icon-yonghutianchong']" ></span>
+                        <span :class="['iconfont', yonghu?'icon-yonghu':'icon-yonghutianchong']" >
+                            <span class="unread" v-show="$store.getters.getContactUnread"></span>
+                        </span>
                     </div>
                 </div>
                 <div>
                     <div @click.stop="loadBangzhu">
-                        <span :class="['iconfont', bangzhu?'icon-bangzhu':'icon-bangzhutianchong']"></span>
+                        <span :class="['iconfont', bangzhu?'icon-bangzhu':'icon-bangzhutianchong']">
+                            
+                        </span>
                     </div>
                     <div @click.stop="loadShezhi" >
                         <span :class="['iconfont', shezhi?'icon-shezhi':'icon-shezhitianchong']"></span>
@@ -87,11 +91,7 @@ export default {
                 this.$store.getters.getUser,
                 this.$store.getters.getToken,
                 body => {
-                    // let curReceiver = this.$store.getters.getReceivert
-                    console.log(body);
-                    MessageHandler[body['msgType']](body);
-                    //save to database
-                   
+                    MessageHandler[body['msgType']](body,this);
                 },err =>{
                     setTimeout(() => {
                         console.log("re connection")
@@ -228,6 +228,7 @@ export default {
     color: white;
     font-size: 32px;
     line-height: 60px;
+    position: relative;
 }
 
 .icon-avatar{
@@ -248,7 +249,15 @@ export default {
 .left > div > div:hover{
     border-left: 1px solid white;
     cursor: pointer;
-
 }
 
+.unread {
+    background-color: red;
+    width: 8px;
+    height: 8px;
+    border-radius: 8px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
 </style>

@@ -106,16 +106,18 @@ export default {
             //set current receiver
             this.$store.commit("setReceiver",this.contact);
             //cache current user for session list
+            let contactInSessions = this.contact;
+            contactInSessions.unread = false;
             let sessions = sessionStorage.getItem("sessions");
             if(sessions){
                 sessions = JSON.parse(sessions);
                 if(!sessions[this.contact.userId]){
-                    sessions[this.contact.userId] = this.contact;
+                    sessions[this.contact.userId] = contactInSessions;
                     sessionStorage.setItem("sessions",JSON.stringify(sessions));
                 }
             }else{
                 sessions = {};
-                sessions[this.contact.userId] = this.contact;
+                sessions[this.contact.userId] = contactInSessions;
                 sessionStorage.setItem("sessions",JSON.stringify(sessions))
             }
             this.$emit("func","Flow"); 
@@ -167,29 +169,34 @@ export default {
                 contactId:this.$store.getters.getContact.userId
             })
             .then(response =>{
-                this.contact = response.data;
-                this.remark = response.data.remark;
+                if(response.code === 200){
+                    this.contact = response.data;
+                    this.remark = response.data.remark;
 
-                //刷新联系人列表缓存
-                let contacts = this.$store.getters.getContacts;
-                for(let i=0; i<contacts.length; i++){
-                    let ct = contacts[i];
-                    if(ct.userId === this.contact.userId){
-                        contacts.splice(i,1,this.contact);
-                        break;
+                    //刷新联系人列表缓存
+                    let contacts = this.$store.getters.getContacts;
+                    for(let i=0; i<contacts.length; i++){
+                        let ct = contacts[i];
+                        if(ct.userId === this.contact.userId){
+                            contacts.splice(i,1,this.contact);
+                            break;
+                        }
                     }
-                }
 
-                //刷新会话列表
-                let sessions = sessionStorage.getItem("sessions");
-                if(sessions){
-                    sessions = JSON.parse(sessions);
-                    let session = sessions[this.contact.userId];
-                    if(session){
-                        sessions[this.contact.userId]=this.contact;
-                        sessionStorage.setItem("sessions",JSON.stringify(sessions));
+                    //刷新会话列表
+                    let sessions = sessionStorage.getItem("sessions");
+                    if(sessions){
+                        sessions = JSON.parse(sessions);
+                        let session = sessions[this.contact.userId];
+                        if(session){
+                            sessions[this.contact.userId]=this.contact;
+                            sessionStorage.setItem("sessions",JSON.stringify(sessions));
+                        }
                     }
+                }else{
+                    this.$notify(response.msg);
                 }
+                
             })
             .catch(function (error) {
                 console.log(error);

@@ -6,8 +6,8 @@
 
         <div class="result" v-for="(item,index) in msg" :key="item.id">
             <div>
-                <img :src="item.content.avatar" alt="">
-                <div>{{item.content.nickname}}</div>
+                <img :src="item.content.sender.avatar" alt="">
+                <div>{{item.content.sender.nickname}}</div>
             </div>
             <div v-if="item.content.status === 0">
                 <i :class="['iconfont', reject?'icon-guanbi':'icon-cuowutishitianchong']" 
@@ -59,15 +59,30 @@ export default {
             this.accpet = !this.accpet;
         },
         handle(index,h){
+            let handleMsg = this.msg[index];
             HttpApi.post("/contact/v1/handle/request",
                 {
-                    sender:this.msg[index].sender,
+                    sender:handleMsg.sender,
                     handle:h     
                 }
             ).then(response => {
-                if(response.code != 200){
-                    this.$notify(response.msg);
+                if(response.code == 200){
+                    handleMsg.content.status = h;
+                    if(h === 1){
+                        let contacts = this.$store.getters.getContacts;
+                        let contact = {
+                            avatar:handleMsg.content.sender.avatar,
+                            createTime:handleMsg.date,
+                            remark:handleMsg.content.sender.nickname,
+                            userId:handleMsg.sender,
+                            username:handleMsg.content.sender.username,
+                        }
+                        contacts.push(contact);
+                    }
+                }else{
+                   this.$notify(response.msg);
                 }
+                
             }).catch(error => {
                 console.log(error);
             })

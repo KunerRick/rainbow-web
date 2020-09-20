@@ -6,10 +6,11 @@
         <div class="blank">
         </div>
         <div class="list">
-            <div v-for="(item,index) in sessions" :key="item.name">
+            <div v-for="(item,index) in $store.getters.getSessions" :key="item.userId">
                 <div @click.stop="loadFlowCom(index)">
                     <div class="contactAvator">
                         <img :src="item.avatar">
+                        <div class="unread" v-if="item.unread"></div>
                     </div>
                     <div class="contactInfo">
                         <div class="contactName">
@@ -34,19 +35,23 @@ export default {
     name:"Sessions",
     data(){
         return {
-            sessions:[],
+            // sessions:[],
         }
     },
     methods:{
         loadFlowCom(index){
-            this.$store.commit("setReceiver",this.sessions[index]);
+            let receiver = this.$store.getters.getSessions[index];
+            receiver.unread = false;
+            this.$store.commit("setReceiver",receiver);
             this.$emit("func","Flow"); 
         }
     },
     created(){
         let sessions = sessionStorage.getItem("sessions");
         if(sessions){
-            this.sessions = JSON.parse(sessions);
+            this.$store.commit("setSessions",JSON.parse(sessions));
+            // this.sessions = this.$store.getters.getSessions;
+
         }
     }
 }
@@ -113,6 +118,7 @@ export default {
 .contactAvator{
     width: 35px;
     height: 35px;
+    position: relative;
 }
 
 .contactAvator > img{
@@ -138,4 +144,13 @@ export default {
     font-size: 12px;
 }
 
+.contactAvator .unread {
+    background-color: red;
+    width: 8px;
+    height: 8px;
+    border-radius: 8px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
 </style>>

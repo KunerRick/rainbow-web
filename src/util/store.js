@@ -29,7 +29,7 @@ DB.install = function(Vue){
             .limit(10)
             .toArray((error,docs) =>{
                 if (error) { console.log(error); }
-                CALLBACK(docs.reverse());
+                CALLBACK(docs?docs.reverse():docs);
             })
         }
     }

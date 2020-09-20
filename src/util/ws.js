@@ -17,7 +17,7 @@ WS.install = function(Vue){
             // 获取STOMP子协议的客户端对象
             WS.stompClient = Stomp.over(socket);
             // 定义客户端的认证信息,按需求配置
-            // this.stompClient.debug = null;
+            this.stompClient.debug = null;
             // 向服务器发起websocket连接
             WS.stompClient.connect({server:"Apache/1.3.9"},() => {
 

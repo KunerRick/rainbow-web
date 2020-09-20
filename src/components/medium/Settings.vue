@@ -39,7 +39,8 @@ export default {
             this.$emit("func","Security");
         },
         exit(){
-             this.$router.replace({path:"/"});
+            sessionStorage.clear();
+            this.$router.replace({path:"/"});
         }
     }
 }

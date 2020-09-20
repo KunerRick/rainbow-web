@@ -6,14 +6,22 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
       session:[],
+      sessions:[],
       contacts:[],
       user:null,
       userProperty:null,
       receiver:null,
       token:null,
       contact:null,
+      contactUnread:false,
     },
     mutations: {
+      setContactUnread(state,unread){
+        state.contactUnread = unread;
+      },
+      setSessions(state,sessions){
+        state.sessions = sessions;
+      },
       setContacts(state,contacts){
         state.contacts = contacts;
       },
@@ -40,6 +48,12 @@ export default new Vuex.Store({
       },
     },
     getters: {
+      getContactUnread: state => {
+        return state.contactUnread;
+      },
+      getSessions: state => {
+        return state.sessions;
+      },
       getContacts: state => {
         return state.contacts;
       },

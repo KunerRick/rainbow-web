@@ -13,6 +13,7 @@
               <div class="newContact" @click.stop.prevent="newContact">
                 <div>
                     <div class="contactAvator iconfont icon-icon-test1 ">
+                        <div class="unread" v-show="$store.getters.getContactUnread"></div>
                     </div>
                     <div class="contactInfo">
                         <div class="contactName">
@@ -72,6 +73,7 @@ export default {
 
         newContact(){
             this.$emit("func","NewContact"); 
+            this.$store.commit("setContactUnread",false);
         },
         search(){
             if(!this.searchContent){
@@ -209,5 +211,16 @@ export default {
 .group .iconfont,.newContact .iconfont {
     font-size: 35px;
     color: #2C9984;
+    position: relative;
+}
+
+.unread {
+    background-color: red;
+    width: 8px;
+    height: 8px;
+    border-radius: 8px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
 }
 </style>>
