@@ -76,14 +76,12 @@ export default {
             }else if(val == 0){
                 return "女";
             }else{
-                return "保密";
+                return "-";
             }
-        }
+        },
     },
     methods:{
         deleteContact(){
-           
-
             HttpApi.delete("/contact/v1/del/"+this.contact.userId)
             .then(resp => {
                 if(resp.code == 200){
@@ -147,6 +145,16 @@ export default {
                             break;
                         }
                     }
+                    //刷新会话列表
+                    let sessions = sessionStorage.getItem("sessions");
+                    if(sessions){
+                        sessions = JSON.parse(sessions);
+                        let contact = sessions[this.contact.userId];
+                        if(contact){
+                            contact.remark = this.remark;
+                            sessionStorage.setItem("sessions",JSON.stringify(sessions));
+                        }
+                    }
                 }
             })
             .catch(function (error) {
@@ -161,6 +169,27 @@ export default {
             .then(response =>{
                 this.contact = response.data;
                 this.remark = response.data.remark;
+
+                //刷新联系人列表缓存
+                let contacts = this.$store.getters.getContacts;
+                for(let i=0; i<contacts.length; i++){
+                    let ct = contacts[i];
+                    if(ct.userId === this.contact.userId){
+                        contacts.splice(i,1,this.contact);
+                        break;
+                    }
+                }
+
+                //刷新会话列表
+                let sessions = sessionStorage.getItem("sessions");
+                if(sessions){
+                    sessions = JSON.parse(sessions);
+                    let session = sessions[this.contact.userId];
+                    if(session){
+                        sessions[this.contact.userId]=this.contact;
+                        sessionStorage.setItem("sessions",JSON.stringify(sessions));
+                    }
+                }
             })
             .catch(function (error) {
                 console.log(error);
@@ -196,6 +225,7 @@ export default {
     border-radius: 60px;
     position: relative;
     overflow: hidden;
+
 } 
 
 

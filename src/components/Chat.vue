@@ -51,12 +51,14 @@ import Flow from './right/Flow'
 import Me from './right/Me'
 import Contact from './right/Contact'
 import NewContact from './right/NewContact'
+import Security from './right/Security'
 
 // import medium
 import Sessions from './medium/Sessions'
 import Contacts from './medium/Contacts'
 import Settings from './medium/Settings'
 
+import MessageHandler from '../util/messageHandler'
 
 export default {
     name:"Chat",
@@ -85,18 +87,9 @@ export default {
                 this.$store.getters.getUser,
                 this.$store.getters.getToken,
                 body => {
-                    let curReceiver = this.$store.getters.getReceivert
-                    //当前消息的接收者是否是当前选择的接收这
-                    if(curReceiver){
-                        if(body.receiver == curReceiver.userId || body.sender == curReceiver.userId){
-                            this.$store.commit('addMessage',body);
-                        }else{
-                            this.$notify("新消息");
-                        }
-                         this.$db.add(body);
-                    }else{
-                        this.$notify("新消息");
-                    }
+                    // let curReceiver = this.$store.getters.getReceivert
+                    console.log(body);
+                    MessageHandler[body['msgType']](body);
                     //save to database
                    
                 },err =>{
@@ -172,6 +165,7 @@ export default {
         Me,
         Contact,
         NewContact,
+        Security,
         
         //medium
         Sessions,

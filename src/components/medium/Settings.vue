@@ -10,7 +10,7 @@
                 <i class="iconfont icon-youjiantou"></i>
             </div>
 
-             <div>
+             <div @click.stop="loadSecurity">
                 <span>安全</span>
                 <i class="iconfont icon-youjiantou"></i>
             </div>
@@ -34,6 +34,9 @@ export default {
     methods:{
         loadMe(){
             this.$emit("func","Me");
+        },
+        loadSecurity(){
+            this.$emit("func","Security");
         },
         exit(){
              this.$router.replace({path:"/"});
@@ -66,10 +69,6 @@ export default {
     width: 100%;
     height: 100%;
     margin-top: 20px;
-}
-
-.setting:last-child{
-
 }
 
 .setting > div{

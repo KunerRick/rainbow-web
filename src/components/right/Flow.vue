@@ -55,8 +55,9 @@
                  <input type="button" value="🖼️" @click="sendPic">
              </div>
             
-            <textarea ref="inputMsg" placeholder="enter to send" v-model="msg" @keydown.enter="send2" @keyup.enter="send"></textarea>
-
+            <textarea ref="inputMsg" v-model="msg" @keydown.enter="send2" @keyup.enter="send"></textarea>
+            <input type="button" value="发送" @click="send" class="sendBtn"/>
+           
         </div>
     </div>
 </template>
@@ -128,6 +129,9 @@ export default {
 
         },
         send(){
+            if(!this.msg){
+                return;
+            }
 
             let message = {
                 msgType:1,
@@ -141,6 +145,8 @@ export default {
                 if(resp.code == 200){
                     this.$store.commit('addMessage',resp.data);
                     this.$db.add(resp.data);
+                }else{
+                    this.$notify(resp.msg);
                 }
                
             }).catch(err => {
@@ -155,8 +161,6 @@ export default {
                             this.$store.getters.getReceivert.userId,
                             docs =>{
                                 this.$store.commit("setSession",docs);
-                                
-                                
             });
         },
       
@@ -222,14 +226,14 @@ export default {
 }
 
 .right .content{
-    height: 85%;
+    height: 82%;
     overflow-y:scroll;
 }
 
 .typing{
-    height: 10%;
-    min-height: 70px; 
-    max-height: 70px;
+    height: 13%;
+    min-height: 100px; 
+    max-height: 100px;
     width: 100%;
     /* border-top: 1px solid #b2b2b2; */
     position: relative;
@@ -240,7 +244,7 @@ export default {
     display: block;
     width: 100%;
     border: 0;
-    height: 100%;
+    height: 60%;
     resize: none;
     padding: 5px;
     font-size: 16px;
@@ -320,5 +324,24 @@ export default {
 
 .toolbar input:hover{
      transform: scale(1.1);
+}
+
+.typing .sendBtn{
+    position: absolute;
+    bottom:5px;
+    right: 5px;
+    height: 28px;
+    width: 70px;
+    border-radius: 5px;
+    border: 0px;
+    background-color: #333;
+    color: #fff;
+    cursor: pointer;
+    line-height: 28px;
+    
+}
+
+.typing .sendBtn:hover{
+    transform: scale(1.1);
 }
 </style>

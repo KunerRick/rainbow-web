@@ -140,9 +140,11 @@ export default {
                 .then(response => {
                     if(response.code == 200){
                         let userProperty = this.$store.getters.getUserPropery;
-                        
+                        //更新缓存
                         userProperty.avatar = response.data;
                         this.$store.commit("setUserProperty",userProperty);
+                        //更新session
+                        sessionStorage.setItem("userProperty",JSON.stringify(userProperty));
                     }
                 })
 
