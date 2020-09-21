@@ -17,12 +17,11 @@ module.exports = {
                 '^/ws':''
             }
           },
-          '/group1': {
-            target: 'http://192.168.1.118',
-            ws: true,
+          '/oss': {
+            target: 'http://192.168.1.118:9000',
             changeOrigin: true,
             pathRewrite:{
-                '^/group1':'/group1'
+                '^/oss':'/oss'
             }
           }
         }
