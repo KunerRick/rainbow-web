@@ -107,6 +107,8 @@ export default {
             //cache current user for session list
             let contactInSessions = this.contact;
             contactInSessions.unread = false;
+            contactInSessions.lastMsg = null;
+            contactInSessions.lastMsgTime = null;
             let sessions = sessionStorage.getItem("sessions");
             if(sessions){
                 sessions = JSON.parse(sessions);
@@ -153,6 +155,9 @@ export default {
                         let contact = sessions[this.contact.userId];
                         if(contact){
                             contact.remark = this.remark;
+                            contact.unread = false;
+                            contact.lastMsg = null;
+                            contact.lastMsgTime = null;
                             sessionStorage.setItem("sessions",JSON.stringify(sessions));
                         }
                     }

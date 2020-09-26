@@ -127,29 +127,31 @@ export default {
             //因为rightCom 值没变所以需要强制刷新界面
             this.rightComName = rightCom;
             
-        }
+        },
     },
     created(){
 
-        //connection with webscoket
-       
-
         //get user from session storage
         let userJson = sessionStorage.getItem("user");
+        let userPropertyJson = sessionStorage.getItem("userProperty");
+        let token = sessionStorage.getItem("token");
+        if(!userJson || !userPropertyJson || !token){
+            this.$ws.disConnection();
+            sessionStorage.clear();
+            this.$router.replace({path:"/"});
+            return;
+        }
+        //get user from session storage
         this.$store.commit("setUser", JSON.parse(userJson));
 
         //get user property from session storage
-        let userPropertyJson = sessionStorage.getItem("userProperty");
         let userProperty = JSON.parse(userPropertyJson);
         this.$store.commit("setUserProperty",userProperty);
 
-            //local storage
-        let token = sessionStorage.getItem("token");
+        //local storage
         this.$store.commit("setToken",token);
-        // HttpApi.defaults.headers.common['Authorization'] = "berarer " + token;
-
+        
         this.userProperty = userProperty;
-
         this.connection();
     },
   

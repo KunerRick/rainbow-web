@@ -14,14 +14,14 @@
                     </div>
                     <div class="contactInfo">
                         <div class="contactName">
-                            <span>{{item.remark}}</span>
+                            <span>{{item.remark | c}}</span>
                         </div>
-                        <div class="contactContent">
-                            <span>{{item.content}}</span>
+                        <div>
+                            <span class="lastMsg">{{item.lastMsg | c}}</span>
                         </div>
                     </div>
                     <div class="contactTime">
-                        <span>{{item.a}}</span>
+                        <span>{{item.lastMsgTime | format}}</span>
                     </div>
                 </div>
             </div>
@@ -44,6 +44,37 @@ export default {
             receiver.unread = false;
             this.$store.commit("setReceiver",receiver);
             this.$emit("func","Flow"); 
+        }
+    },
+    filters:{
+        c:function(content){
+            if(content){
+                return content.length >= 6 ? content.substr(0,6) + "..." : content;
+            }else{
+                return "-";
+            }
+           
+        },
+        format:function(time){
+            if(!time){
+                return "--:--";
+            }
+            time = new Date(time);
+            let fmt = "HH:mm";
+            var o = {
+                        "M+": time.getMonth() + 1, // 月份
+                        "d+": time.getDate(), // 日
+                        "H+": time.getHours(), // 小时
+                        "m+": time.getMinutes(), // 分
+                        "s+": time.getSeconds(), // 秒
+                        "q+": Math.floor((time.getMonth() + 3) / 3), // 季度
+                        "S": time.getMilliseconds() // 毫秒
+                    };
+            if (/(y+)/.test(fmt))
+                fmt = fmt.replace(RegExp.$1, (time.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o)
+                if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            return fmt;
         }
     },
     created(){
@@ -153,4 +184,5 @@ export default {
     top: 0px;
     right: 0px;
 }
+
 </style>>

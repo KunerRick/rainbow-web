@@ -40,7 +40,7 @@
                     </div>
                     <div class="contactInfo">
                         <div class="contactName">
-                            <span>{{item.remark}}</span>
+                            <span>{{item.remark | c}}</span>
                         </div>
                     </div>
                 </div>
@@ -59,6 +59,16 @@ export default {
         return {
             contacts:null,
             searchContent:null,
+        }
+    },
+    filters:{
+        c:function(content){
+            if(content){
+                return content.length >= 6 ? content.substr(0,6) + "..." : content;
+            }else{
+                return "-";
+            }
+           
         }
     },
     methods:{

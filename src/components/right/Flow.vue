@@ -29,12 +29,18 @@
                     <span>{{item.date | format}}</span>
                 </div>
                 <div class="bubble" v-if="item.sender == receiver.userId">
-                     <img v-bind:src="receiver.avatar" alt="">
-                    <div>{{item.content.txt}}</div>
+                     <img class="avatar" v-bind:src="receiver.avatar" alt="">
+                    <div v-if="item.msgType == 1">{{item.content.txt}}</div>
+                    <div v-else-if="item.msgType == 2">
+                        <img class="msgPic" :src="item.content.uri">   
+                    </div>
                 </div>
                 <div class="bubble" v-else>
-                    <div>{{item.content.txt}}</div>
-                    <img :src="userProperty.avatar" alt="">
+                    <div v-if="item.msgType == 1">{{item.content.txt}}</div>
+                    <div v-else-if="item.msgType == 2">
+                        <img class="msgPic"  :src="item.content.uri"/>   
+                    </div>
+                    <img class="avatar" :src="userProperty.avatar" alt="">
                 </div>
             </div>
 
@@ -113,6 +119,45 @@ export default {
             this.emojiDisplay = false;
         },
         sendPic(){
+              new Promise((resolve) => {
+                let input = document.createElement('input');
+                input.value = '选择文件';
+                input.type = 'file';
+                input.accept = 'image/png,image/gif,image/jpeg';
+                input.onchange = event => {
+                    let file = event.target.files[0];
+                    resolve(file);
+                };
+                input.click();
+            }).then(file => {
+                let param = new FormData();
+                param.append('file',file);
+                param.append('receiver',this.receiver.userId);
+
+                //设置请求头
+                let config = {
+                    headers:{'Content-Type':'multipart/form-data'}
+                }; 
+                HttpApi.put('/message/v1/pic/sending',param,config)
+                .then(resp => {
+                    if(resp.code == 200){
+                        let msgResp = resp.data;
+                        this.$store.commit('addMessage',msgResp);
+                        this.$db.add(msgResp);
+                        
+                        let sessions = this.$store.getters.getSessions;
+                        let session = sessions[msgResp.receiver];
+                        if(session){
+                            session.lastMsg = "[图片]";
+                            session.lastMsgTime = msgResp.date;
+                        }
+
+                    }
+                })
+
+
+            });
+
 
         },
         showEmojiPicker(){
@@ -143,8 +188,17 @@ export default {
             HttpApi.put("/message/v1/sending",message)
             .then(resp => {
                 if(resp.code == 200){
-                    this.$store.commit('addMessage',resp.data);
-                    this.$db.add(resp.data);
+                    let msgResp = resp.data;
+                    this.$store.commit('addMessage',msgResp);
+                    this.$db.add(msgResp);
+                    
+                    let sessions = this.$store.getters.getSessions;
+                    let session = sessions[msgResp.receiver]
+                    if(session){
+                        session.lastMsg = msgResp.content.txt;
+                        session.lastMsgTime = msgResp.date;
+                    }
+                   
                 }else{
                     this.$notify(resp.msg);
                 }
@@ -299,10 +353,15 @@ export default {
     color: white;
 }
 
-.content img{
+.content .avatar{
     width: 35px;
     height: 35px;
     border-radius: 35px;
+}
+
+.content .msgPic{
+    width: 200px;
+    height: 100px;
 }
 
 .toolbar {
