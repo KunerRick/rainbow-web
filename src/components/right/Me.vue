@@ -99,7 +99,6 @@ export default {
         modified(){
             this.flag = true;
             let property = this.$store.getters.getUserPropery
-            console.log(property);
             HttpApi.post("/user/v1/property",{
                 age:property.age,
                 email:property.email,

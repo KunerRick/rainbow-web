@@ -24,7 +24,7 @@ let handler = {
        
         session.lastMsg = body.content.txt;
         session.lastMsgTime = body.date;
-
+        sessionStorage.setItem("sessions",JSON.stringify(sessions));
     },
     /**
      * 图片消息
@@ -46,9 +46,9 @@ let handler = {
             //添加未读红点
             session.unread = true;
         }
-       
         session.lastMsg = "[图片]";
         session.lastMsgTime = body.date;
+        sessionStorage.setItem("sessions",JSON.stringify(sessions));
     },
     /**
      * 添加好友消息

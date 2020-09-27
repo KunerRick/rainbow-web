@@ -85,7 +85,6 @@ export default {
             .then(resp => {
                 if(resp.code == 200){
                     let contacts = this.$store.getters.getContacts;
-                    console.log(contacts);
                     for(let ele of contacts){
                         if(this.contact.userId === ele.userId){
                             contacts.pop(ele);
@@ -105,23 +104,21 @@ export default {
             //set current receiver
             this.$store.commit("setReceiver",this.contact);
             //cache current user for session list
-            let contactInSessions = this.contact;
-            contactInSessions.unread = false;
-            contactInSessions.lastMsg = null;
-            contactInSessions.lastMsgTime = null;
             let sessions = sessionStorage.getItem("sessions");
             if(sessions){
                 sessions = JSON.parse(sessions);
                 if(!sessions[this.contact.userId]){
-                    sessions[this.contact.userId] = contactInSessions;
+                    sessions[this.contact.userId] = this.contact;
                     sessionStorage.setItem("sessions",JSON.stringify(sessions));
                 }
             }else{
                 sessions = {};
-                sessions[this.contact.userId] = contactInSessions;
+                sessions[this.contact.userId] = this.contact;
                 sessionStorage.setItem("sessions",JSON.stringify(sessions))
             }
             this.$emit("func","Flow"); 
+            this.$emit("func2","Sessions"); 
+
         },
         editRemark(){
             this.flag = false;
@@ -155,9 +152,6 @@ export default {
                         let contact = sessions[this.contact.userId];
                         if(contact){
                             contact.remark = this.remark;
-                            contact.unread = false;
-                            contact.lastMsg = null;
-                            contact.lastMsgTime = null;
                             sessionStorage.setItem("sessions",JSON.stringify(sessions));
                         }
                     }
@@ -175,6 +169,9 @@ export default {
             .then(response =>{
                 if(response.code === 200){
                     this.contact = response.data;
+                    this.contact.unread = false;
+                    this.contact.lastMsg = null;
+                    this.contact.lastMsgTime = new Date().getTime();
                     this.remark = response.data.remark;
 
                     //刷新联系人列表缓存
@@ -193,7 +190,9 @@ export default {
                         sessions = JSON.parse(sessions);
                         let session = sessions[this.contact.userId];
                         if(session){
-                            sessions[this.contact.userId]=this.contact;
+                            this.contact.unread = session.unread?true:false;
+                            this.contact.lastMsg = session.lastMsg?session.lastMsg:null;
+                            sessions[this.contact.userId]= this.contact;
                             sessionStorage.setItem("sessions",JSON.stringify(sessions));
                         }
                     }

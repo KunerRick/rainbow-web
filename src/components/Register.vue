@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="login-text">Let's </div> 
-        <div class="chat-panel-text">注册</div>
+        <div class="chat-panel-text">Sign Up</div>
 
         <div>
             <div class="username-text">邮箱</div>
@@ -112,7 +112,7 @@ export default {
         position: absolute;
     }
     .chat-panel-text{
-        font-size: 80px;
+        font-size: 75px;
     }
 
     .username-text{

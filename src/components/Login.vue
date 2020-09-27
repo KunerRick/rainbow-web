@@ -63,22 +63,33 @@ export default {
                 }
             })
             .then(response => { // 
-                if(response.code == 200){
-                    let curUserProperty = response.data;
-                    //cache user property 
-                    sessionStorage.setItem("userProperty",JSON.stringify(curUserProperty));
-                    //cache user property to vuex
-                    this.$store.commit('setUserProperty',curUserProperty);
-                    this.$router.replace({path:"/chat"});
-                }else{
-                    this.$notify(response.data.msg);
+                if(response){
+                    if(response.code == 200){
+                        let curUserProperty = response.data;
+                        //cache user property 
+                        sessionStorage.setItem("userProperty",JSON.stringify(curUserProperty));
+                        //cache user property to vuex
+                        this.$store.commit('setUserProperty',curUserProperty);
+                        this.$router.replace({path:"/chat"});
+                    }else{
+                        this.$notify(response.msg);
+                    }
                 }
+              
             })
             .catch(function (error) {
                 console.log(error);
             });
 
        }
+    },
+    mounted(){
+          document.onkeyup = ()=> {
+                let key = window.event.keyCode;
+                if (key == 13) {
+                    this.signIn();
+                }
+          }
     },
 
 }
@@ -96,7 +107,7 @@ export default {
     position: absolute;
 }
 .chat-panel-text{
-    font-size: 80px;
+    font-size: 75px;
 }
 .username-text{
     margin-top: 32px;

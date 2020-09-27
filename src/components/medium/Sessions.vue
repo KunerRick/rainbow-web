@@ -16,8 +16,8 @@
                         <div class="contactName">
                             <span>{{item.remark | c}}</span>
                         </div>
-                        <div>
-                            <span class="lastMsg">{{item.lastMsg | c}}</span>
+                        <div class="lastMsg">
+                            <span>{{item.lastMsg | c}}</span>
                         </div>
                     </div>
                     <div class="contactTime">
@@ -50,8 +50,6 @@ export default {
         c:function(content){
             if(content){
                 return content.length >= 6 ? content.substr(0,6) + "..." : content;
-            }else{
-                return "-";
             }
            
         },
@@ -183,6 +181,10 @@ export default {
     position: absolute;
     top: 0px;
     right: 0px;
+}
+
+.lastMsg{
+    height: 20px;
 }
 
 </style>>

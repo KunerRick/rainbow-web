@@ -4,26 +4,6 @@
             <span>{{receiver.remark}}</span>
         </div>
         <div class="content" ref="msgWarp" @click="cancelEmojiPicker">
-            <!-- <div class="you">
-                    <div class="time">
-                    <span>10:30</span>
-                </div>
-                <div class="bubble">
-                    <img v-bind:src="receiver.avatar" alt="">
-                    <div>How R U ?</div>
-                </div>
-            </div>
-
-            <div class="me">
-                <div class="time">
-                    <span>10:30</span>
-                </div>
-                <div class="bubble">
-                    <div>I'm Fine,thank you</div>
-                    <img src="@/assets/logo.png" alt="">
-                </div>
-            </div> -->
-
              <div :class="item.sender === receiver.userId?'you':'me'" v-for="(item,index) in $store.getters.getSession" :key="index">
                 <div class="time">
                     <span>{{item.date | format}}</span>
@@ -32,13 +12,17 @@
                      <img class="avatar" v-bind:src="receiver.avatar" alt="">
                     <div v-if="item.msgType == 1">{{item.content.txt}}</div>
                     <div v-else-if="item.msgType == 2">
-                        <img class="msgPic" :src="item.content.uri">   
+                        <img :src="item.content.uri" 
+                        :width="item.content.width | imgW" 
+                        :height="item.content.height | imgH(item.content.width)"/>   
                     </div>
                 </div>
                 <div class="bubble" v-else>
                     <div v-if="item.msgType == 1">{{item.content.txt}}</div>
                     <div v-else-if="item.msgType == 2">
-                        <img class="msgPic"  :src="item.content.uri"/>   
+                         <img :src="item.content.uri" 
+                        :width="item.content.width | imgW" 
+                        :height="item.content.height | imgH(item.content.width)"/>   
                     </div>
                     <img class="avatar" :src="userProperty.avatar" alt="">
                 </div>
@@ -113,7 +97,6 @@ export default {
           });
        }
     },
- 
     methods:{
         cancelEmojiPicker(){
             this.emojiDisplay = false;
@@ -150,15 +133,12 @@ export default {
                         if(session){
                             session.lastMsg = "[图片]";
                             session.lastMsgTime = msgResp.date;
+                            sessionStorage.setItem("sessions",JSON.stringify(sessions));
                         }
 
                     }
                 })
-
-
             });
-
-
         },
         showEmojiPicker(){
           this.emojiDisplay = !this.emojiDisplay;  
@@ -168,7 +148,6 @@ export default {
             this.emojiDisplay = false;
             this.$refs.inputMsg.focus();
         },
-   
         send2(event){
             event.preventDefault();
 
@@ -197,6 +176,7 @@ export default {
                     if(session){
                         session.lastMsg = msgResp.content.txt;
                         session.lastMsgTime = msgResp.date;
+                        sessionStorage.setItem("sessions",JSON.stringify(sessions));
                     }
                    
                 }else{
@@ -228,9 +208,41 @@ export default {
     },
     mounted(){
         this.$refs.msgWarp.scrollTo(0,this.$refs.msgWarp.scrollHeight);
-         this.$refs.inputMsg.focus();
+        this.$refs.inputMsg.focus();
     },
     filters:{
+        imgW:function(width){
+            //计算图片宽
+            if(width >= 2000){
+                return width / 7;
+            }else if(width >=1500 && width < 2000){
+                return width / 6;
+            }else if(width >=1000 && width < 1500){
+                return width / 5;
+            }else if(width >= 500 && width < 1000){
+                return width / 4;
+            }else if(width >= 200 && width < 500){
+                return width / 3;
+            }else{
+                return width / 2;
+            }
+        },
+        imgH:function(height,width){
+            //计算图片高
+            if(width >= 2000){
+                return height / 7;
+            }else if(width >= 1500 && width < 2000){
+                return height / 6;
+            }else if(width >= 1000 && width < 1500){
+                return height / 5;
+            }else if(width >= 500 && width < 1000){
+                return height / 4;
+            }else if(width >= 200 && width < 500){
+                return height / 3;
+            }else{
+                return height / 2;
+            }
+        },
         format:function(time){
             time = new Date(time);
             let fmt = '';
@@ -357,11 +369,6 @@ export default {
     width: 35px;
     height: 35px;
     border-radius: 35px;
-}
-
-.content .msgPic{
-    width: 200px;
-    height: 100px;
 }
 
 .toolbar {

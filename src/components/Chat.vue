@@ -37,6 +37,7 @@
                     <component :is="rightComName" 
                                 style="animation-duration: .2s" 
                                 @func="rightCom"
+                                @func2="mediumCom"
                                 :key='incrementKey'></component>
                 </transition>
             </div>
@@ -128,6 +129,9 @@ export default {
             this.rightComName = rightCom;
             
         },
+        mediumCom(){
+            this.loadChats();
+        }
     },
     created(){
 

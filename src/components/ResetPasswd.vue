@@ -102,7 +102,7 @@ export default {
         position: absolute;
     }
     .chat-panel-text{
-        font-size: 80px;
+        font-size: 75px;
     }
     .username-text{
         margin-top: 16px;
