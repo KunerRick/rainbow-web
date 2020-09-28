@@ -1,6 +1,6 @@
 # rainbow-web
 
-rainbow-web是一个基于vue2的实现rainbow系统的IM web客户端程序
+rainbow-web是一个实现rainbow IM系统的web客户端程序。
 
 ## 介绍
 
